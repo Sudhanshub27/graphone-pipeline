@@ -106,11 +106,17 @@ class EntityResolver:
     ) -> Dict[str, Any]:
         """Log entity resolution decision to data/processed/entity_mapping_log.jsonl."""
         settings.DATA_PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+        record_id = f"er-{abs(hash(raw_name)) % 10000:04d}"
+        status = "merged" if canonical_name else ("needs_review" if confidence_score >= 0.5 else "kept_separate")
         record = {
+            "id": record_id,
+            "entity_name": canonical_name or raw_name,
             "raw_name": raw_name,
             "canonical_name": canonical_name,
+            "entity_type": "startup",
             "method_used": method_used,
             "confidence_score": round(confidence_score, 2),
+            "status": status,
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
 

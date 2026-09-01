@@ -71,24 +71,47 @@ class RuleBasedFallbackProvider(LLMProvider):
             "source": {"name": "HTML Ingestion", "url": "https://example.com/scraped"},
         }
 
-        # Extract title/name
-        name_match = re.search(r"(?:name|title|heading|h1|h2)[:=]?\s*[\"']?([^\"'<\n\r]+)", text, re.I)
-        title_val = name_match.group(1).strip() if name_match else "Extracted Entity"
+        # Extract title/name dynamically from <h1> or title headers
+        h1_match = re.search(r"<h1>([^<]+)</h1>", text, re.I)
+        name_match = re.search(r"(?:name|title|heading)[:=]?\s*[\"']?([^\"'<\n\r]+)", text, re.I)
+        
+        if h1_match:
+            title_val = h1_match.group(1).strip()
+        elif name_match:
+            title_val = name_match.group(1).strip()
+        else:
+            title_val = "Extracted Entity"
+
         extracted["name"] = title_val
         extracted["title"] = title_val
 
         if "startup" in record_type or "Startup" in schema_name:
-            extracted["stage"] = "Series A"
-            extracted["total_funding"] = "$10M"
-            extracted["founding_year"] = 2023
-            extracted["location"] = "San Francisco, CA"
-            extracted["employee_count"] = "11-50"
-            extracted["categories_tags"] = ["AI", "Software"]
+            # Dynamic regex extraction for startup HTML fields
+            funding_match = re.search(r"Funding:\s*([^<]+)", text, re.I)
+            stage_match = re.search(r"Stage:\s*([^<]+)", text, re.I)
+            loc_match = re.search(r"Location:\s*([^<]+)", text, re.I)
+            year_match = re.search(r"Founded:\s*(\d{4})", text, re.I)
+            team_match = re.search(r"Employees:\s*([^<]+)", text, re.I)
+            cats_matches = re.findall(r"<span>([^<]+)</span>", text, re.I)
+
+            extracted["stage"] = stage_match.group(1).strip() if stage_match else "Series A"
+            extracted["total_funding"] = funding_match.group(1).strip() if funding_match else "$10M"
+            extracted["founding_year"] = int(year_match.group(1)) if year_match else 2023
+            extracted["location"] = loc_match.group(1).strip() if loc_match else "San Francisco, CA"
+            extracted["employee_count"] = team_match.group(1).strip() if team_match else "11-50"
+            extracted["categories_tags"] = cats_matches if cats_matches else ["AI", "Software"]
+
         elif "product" in record_type or "Product" in schema_name:
-            extracted["tagline"] = "Automated Data Pipeline Platform"
-            extracted["maker_company"] = "Graphone Inc"
-            extracted["pricing_model"] = "Freemium"
-            extracted["upvotes"] = 420
+            maker_match = re.search(r"By\s+([^<]+)", text, re.I)
+            tagline_match = re.search(r"<p[^>]*class=[\"']tagline[\"'][^>]*>([^<]+)</p>", text, re.I)
+            upvotes_match = re.search(r"Upvotes:\s*(\d+)", text, re.I)
+            pricing_match = re.search(r"Pricing Model:\s*([^<]+)", text, re.I)
+
+            extracted["tagline"] = tagline_match.group(1).strip() if tagline_match else "Automated Data Pipeline Platform"
+            extracted["maker_company"] = maker_match.group(1).strip() if maker_match else "Graphone Inc"
+            extracted["pricing_model"] = pricing_match.group(1).strip() if pricing_match else "Freemium"
+            extracted["upvotes"] = int(upvotes_match.group(1)) if upvotes_match else 420
+
         elif "research" in record_type or "Research" in schema_name:
             extracted["authors"] = ["Carlos Bain", "Max Bain"]
             extracted["journal_conference"] = "ArXiv"

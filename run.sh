@@ -45,21 +45,35 @@ echo "🧪 STAGE 1: RUNNING AUTOMATED UNIT TEST SUITE"
 echo "======================================================================"
 pytest tests/ -v
 
+# Default to --dry-run if no CLI flags are passed for fast launch
+RUN_ARGS="$@"
+if [ $# -eq 0 ]; then
+    RUN_ARGS="--dry-run"
+fi
+
 # 3. Run Main Pipeline Ingestion Orchestrator
 echo ""
 echo "======================================================================"
 echo "⚡ STAGE 2: EXECUTING MULTI-TARGET INGESTION ORCHESTRATOR"
 echo "======================================================================"
-python3 -m src.main run all "$@"
+python3 -m src.main run all $RUN_ARGS
 
 # 4. Run Sheets / CSV Export
 echo ""
 echo "======================================================================"
 echo "📊 STAGE 3: EXECUTING GOOGLE SHEETS / CSV EXPORT SYNC"
 echo "======================================================================"
-python3 -m src.main export sheets "$@"
+python3 -m src.main export sheets $RUN_ARGS
 
+# 5. Launch Web Dashboard UI
 echo ""
 echo "======================================================================"
-echo "✅ PIPELINE RUN COMPLETED SUCCESSFULLY!"
+echo "🌐 STAGE 4: LAUNCHING REACT + FASTAPI DASHBOARD WEB UI"
 echo "======================================================================"
+echo "▶ Dashboard server running at: http://localhost:8000"
+echo "▶ Press Ctrl+C to stop the dashboard server."
+
+# Attempt to open browser automatically
+(sleep 1.5 && python3 -m webbrowser "http://localhost:8000") &
+
+uvicorn src.dashboard.main:app --host 0.0.0.0 --port 8000

@@ -72,6 +72,16 @@ async def fetch_github_stars(
                         reset_epoch = float(reset_time_str)
                         current_epoch = time.time()
                         sleep_duration = max(1.0, reset_epoch - current_epoch + 1.0)
+                        if sleep_duration > 5.0:
+                            logger.warning(
+                                "GitHub API rate limit reset duration exceeds max threshold (5s). Skipping star fetch.",
+                                url=github_url,
+                                reset_at=reset_time_str,
+                                sleep_seconds=round(sleep_duration, 1),
+                            )
+                            _STARS_CACHE[cache_key] = 0
+                            return 0
+
                         logger.warning(
                             "GitHub API rate limit reached. Waiting for reset.",
                             url=github_url,

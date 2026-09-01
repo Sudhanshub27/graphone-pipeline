@@ -249,6 +249,13 @@ class PipelineOrchestrator:
         self.metrics["targets"]["Jobs"] = {"count": jobs_cnt, "status": "success"}
         return {"news": news_cnt, "jobs": jobs_cnt}
 
+    async def run_all_pipelines(self):
+        """Run all ingestion target pipelines sequentially."""
+        await self.run_startups_pipeline()
+        await self.run_products_pipeline()
+        await self.run_papers_pipeline()
+        await self.run_freshness_news_jobs_pipeline()
+
     # --------------------------------------------------------------------------
     # TERMINAL UI SUMMARY TABLE DISPLAY
     # --------------------------------------------------------------------------
