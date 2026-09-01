@@ -1,0 +1,200 @@
+{
+  "startups": [
+    {
+      "canonical_name": "OpenAI",
+      "aliases": ["OpenAI", "OpenAI, Inc.", "Open AI", "openai.com", "OpenAI LLC", "OpenAI Inc"]
+    },
+    {
+      "canonical_name": "Anthropic",
+      "aliases": ["Anthropic", "Anthropic PBC", "Anthropic AI", "anthropic.com", "Anthropic, PBC"]
+    },
+    {
+      "canonical_name": "Cohere",
+      "aliases": ["Cohere", "Cohere Inc.", "Cohere AI", "cohere.com", "Cohere Technologies"]
+    },
+    {
+      "canonical_name": "Mistral AI",
+      "aliases": ["Mistral AI", "Mistral", "Mistral AI SAS", "mistral.ai", "MistralAI"]
+    },
+    {
+      "canonical_name": "Perplexity AI",
+      "aliases": ["Perplexity AI", "Perplexity", "Perplexity, Inc.", "perplexity.ai", "Perplexity AI Inc"]
+    },
+    {
+      "canonical_name": "Midjourney",
+      "aliases": ["Midjourney", "Midjourney Inc", "midjourney.com", "Midjourney, Inc."]
+    },
+    {
+      "canonical_name": "Runway",
+      "aliases": ["Runway", "RunwayML", "Runway AI", "runwayml.com", "Runway AI, Inc."]
+    },
+    {
+      "canonical_name": "Hugging Face",
+      "aliases": ["Hugging Face", "HuggingFace", "Hugging Face, Inc.", "huggingface.co"]
+    },
+    {
+      "canonical_name": "ElevenLabs",
+      "aliases": ["ElevenLabs", "Eleven Labs", "ElevenLabs Inc.", "elevenlabs.io"]
+    },
+    {
+      "canonical_name": "Scale AI",
+      "aliases": ["Scale AI", "Scale", "Scale API", "scale.com", "Scale Labs, Inc."]
+    },
+    {
+      "canonical_name": "Stability AI",
+      "aliases": ["Stability AI", "Stability.ai", "Stability AI Ltd", "stability.ai"]
+    },
+    {
+      "canonical_name": "Synthesia",
+      "aliases": ["Synthesia", "Synthesia Ltd", "synthesia.io", "Synthesia Technologies"]
+    },
+    {
+      "canonical_name": "Jasper AI",
+      "aliases": ["Jasper AI", "Jasper", "Jasper.ai", "Jarvis AI"]
+    },
+    {
+      "canonical_name": "Harvey AI",
+      "aliases": ["Harvey AI", "Harvey", "Harvey Technologies", "harvey.ai"]
+    },
+    {
+      "canonical_name": "Glean",
+      "aliases": ["Glean", "Glean Technologies", "glean.com", "Glean Work"]
+    },
+    {
+      "canonical_name": "Cresta",
+      "aliases": ["Cresta", "Cresta.ai", "Cresta Intelligence Inc.", "cresta.com"]
+    },
+    {
+      "canonical_name": "Anysphere (Cursor)",
+      "aliases": ["Cursor", "Anysphere", "Cursor Editor", "cursor.com", "Anysphere Inc"]
+    },
+    {
+      "canonical_name": "Cognition Labs",
+      "aliases": ["Cognition", "Cognition Labs", "Devin AI", "cognition-labs.com", "Cognition AI"]
+    },
+    {
+      "canonical_name": "Figure AI",
+      "aliases": ["Figure AI", "Figure", "Figure Robotics", "figure.ai"]
+    },
+    {
+      "canonical_name": "Physical Intelligence",
+      "aliases": ["Physical Intelligence", "pi.ai", "pi.company", "Physical Intelligence Inc"]
+    },
+    {
+      "canonical_name": "xAI",
+      "aliases": ["xAI", "x.ai", "X AI Corp", "xAI Corp"]
+    },
+    {
+      "canonical_name": "Inflection AI",
+      "aliases": ["Inflection AI", "Inflection", "inflection.ai", "Inflection AI, Inc."]
+    },
+    {
+      "canonical_name": "Character.AI",
+      "aliases": ["Character.AI", "Character AI", "character.ai", "Character Technologies"]
+    },
+    {
+      "canonical_name": "DeepL",
+      "aliases": ["DeepL", "DeepL SE", "deepl.com", "DeepL Translator"]
+    },
+    {
+      "canonical_name": "Replit",
+      "aliases": ["Replit", "Replit Inc.", "replit.com", "Repl.it"]
+    },
+    {
+      "canonical_name": "Pinecone",
+      "aliases": ["Pinecone", "Pinecone Systems", "pinecone.io", "Pinecone DB"]
+    },
+    {
+      "canonical_name": "Weaviate",
+      "aliases": ["Weaviate", "Weaviate B.V.", "weaviate.io", "Weaviate Vector Database"]
+    },
+    {
+      "canonical_name": "Qdrant",
+      "aliases": ["Qdrant", "Qdrant Solutions GmbH", "qdrant.tech"]
+    },
+    {
+      "canonical_name": "Chroma",
+      "aliases": ["Chroma", "ChromaDB", "trychroma.com", "Chroma DB Inc"]
+    },
+    {
+      "canonical_name": "LangChain",
+      "aliases": ["LangChain", "LangChain Inc", "langchain.com", "LangChain AI"]
+    },
+    {
+      "canonical_name": "LlamaIndex",
+      "aliases": ["LlamaIndex", "Llama Index", "llamaindex.ai", "GPT Index"]
+    },
+    {
+      "canonical_name": "Unstructured",
+      "aliases": ["Unstructured", "Unstructured IO", "unstructured.io", "Unstructured Technologies"]
+    },
+    {
+      "canonical_name": "Fireworks AI",
+      "aliases": ["Fireworks AI", "Fireworks", "fireworks.ai", "Fireworks Inc"]
+    },
+    {
+      "canonical_name": "Together AI",
+      "aliases": ["Together AI", "Together", "together.ai", "Together Computer Inc"]
+    },
+    {
+      "canonical_name": "Baseten",
+      "aliases": ["Baseten", "Baseten Labs", "baseten.co", "Baseten Inc"]
+    },
+    {
+      "canonical_name": "Anyscale",
+      "aliases": ["Anyscale", "Anyscale Inc.", "anyscale.com", "Ray Anyscale"]
+    },
+    {
+      "canonical_name": "Modal",
+      "aliases": ["Modal", "Modal Labs", "modal.com", "Modal Labs Inc"]
+    },
+    {
+      "canonical_name": "OctoAI",
+      "aliases": ["OctoAI", "OctoML", "octo.ai", "OctoML Inc"]
+    },
+    {
+      "canonical_name": "Groq",
+      "aliases": ["Groq", "Groq Inc", "groq.com", "Groq Hardware"]
+    },
+    {
+      "canonical_name": "Cerebras Systems",
+      "aliases": ["Cerebras", "Cerebras Systems", "cerebras.net", "Cerebras AI"]
+    },
+    {
+      "canonical_name": "SambaNova Systems",
+      "aliases": ["SambaNova", "SambaNova Systems", "sambanova.ai", "SambaNova AI"]
+    },
+    {
+      "canonical_name": "Tenstorrent",
+      "aliases": ["Tenstorrent", "Tenstorrent Inc", "tenstorrent.com"]
+    },
+    {
+      "canonical_name": "Etched",
+      "aliases": ["Etched", "Etched.ai", "etched.ai", "Etched AI Inc"]
+    },
+    {
+      "canonical_name": "D-ID",
+      "aliases": ["D-ID", "De-ID Software Ltd", "d-id.com", "D-ID AI"]
+    },
+    {
+      "canonical_name": "HeyGen",
+      "aliases": ["HeyGen", "HeyGen AI", "heygen.com", "Movio HeyGen"]
+    },
+    {
+      "canonical_name": "Descript",
+      "aliases": ["Descript", "Descript Inc", "descript.com"]
+    },
+    {
+      "canonical_name": "Tavus",
+      "aliases": ["Tavus", "Tavus.io", "tavus.io", "Tavus AI"]
+    },
+    {
+      "canonical_name": "Pika Labs",
+      "aliases": ["Pika", "Pika Labs", "pika.art", "Pika AI"]
+    },
+    {
+      "canonical_name": "Luma AI",
+      "aliases": ["Luma AI", "Luma Labs", "lumalabs.ai", "Luma Dream Machine"]
+    }
+  ]
+}

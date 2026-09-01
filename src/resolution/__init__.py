@@ -1,4 +1,3 @@
-"""Entity resolution and deduplication package."""
-from src.resolution.dedupe import EntityResolver
+from src.resolution.entity_resolver import EntityResolver, normalize_entity_name
 
-__all__ = ["EntityResolver"]
+__all__ = ["EntityResolver", "normalize_entity_name"]
