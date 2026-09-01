@@ -1,0 +1,180 @@
+{
+  "summary": {
+    "totalProcessed": 1420,
+    "exactMatchCount": 852,
+    "exactMatchPct": 60.0,
+    "normalizedCount": 355,
+    "normalizedPct": 25.0,
+    "fuzzyCount": 142,
+    "fuzzyPct": 10.0,
+    "unresolvedCount": 71,
+    "unresolvedPct": 5.0
+  },
+  "entries": [
+    {
+      "id": "er-1001",
+      "source_record_id": "raw-st-042",
+      "target_record_id": "ent-st-001",
+      "entity_type": "startup",
+      "entity_name": "Cogna AI Inc.",
+      "confidence_score": 1.0,
+      "method_used": "exact",
+      "status": "merged",
+      "timestamp": "2026-09-01T15:28:12Z"
+    },
+    {
+      "id": "er-1002",
+      "source_record_id": "raw-pr-108",
+      "target_record_id": "ent-pr-015",
+      "entity_type": "product",
+      "entity_name": "PromptGuard v2.0",
+      "confidence_score": 0.98,
+      "method_used": "normalized",
+      "status": "merged",
+      "timestamp": "2026-09-01T15:28:45Z"
+    },
+    {
+      "id": "er-1003",
+      "source_record_id": "raw-rp-304",
+      "target_record_id": "ent-rp-008",
+      "entity_type": "research_paper",
+      "entity_name": "Sub-quadratic Attention via Dynamic Knowledge Routing",
+      "confidence_score": 0.84,
+      "method_used": "fuzzy",
+      "status": "needs_review",
+      "timestamp": "2026-09-01T15:29:10Z"
+    },
+    {
+      "id": "er-1004",
+      "source_record_id": "raw-jb-512",
+      "target_record_id": "ent-jb-022",
+      "entity_type": "job",
+      "entity_name": "Senior Async Python Engineer @ Cogna",
+      "confidence_score": 0.95,
+      "method_used": "normalized",
+      "status": "merged",
+      "timestamp": "2026-09-01T15:29:30Z"
+    },
+    {
+      "id": "er-1005",
+      "source_record_id": "raw-nw-701",
+      "target_record_id": "ent-nw-003",
+      "entity_type": "news",
+      "entity_name": "Groq LPU Announcement",
+      "confidence_score": 0.62,
+      "method_used": "fuzzy",
+      "status": "needs_review",
+      "timestamp": "2026-09-01T15:30:02Z"
+    },
+    {
+      "id": "er-1006",
+      "source_record_id": "raw-st-043",
+      "target_record_id": "ent-st-002",
+      "entity_type": "startup",
+      "entity_name": "SynthFlow Voice",
+      "confidence_score": 1.0,
+      "method_used": "exact",
+      "status": "merged",
+      "timestamp": "2026-09-01T15:30:25Z"
+    },
+    {
+      "id": "er-1007",
+      "source_record_id": "raw-pr-109",
+      "target_record_id": "ent-pr-016",
+      "entity_type": "product",
+      "entity_name": "DocuAgent AI",
+      "confidence_score": 0.79,
+      "method_used": "fuzzy",
+      "status": "needs_review",
+      "timestamp": "2026-09-01T15:30:50Z"
+    },
+    {
+      "id": "er-1008",
+      "source_record_id": "raw-rp-305",
+      "target_record_id": "ent-rp-009",
+      "entity_type": "research_paper",
+      "entity_name": "Zero-Shot Entity Resolution in Heterogeneous Data",
+      "confidence_score": 1.0,
+      "method_used": "exact",
+      "status": "merged",
+      "timestamp": "2026-09-01T15:31:12Z"
+    },
+    {
+      "id": "er-1009",
+      "source_record_id": "raw-st-044",
+      "target_record_id": "ent-st-099",
+      "entity_type": "startup",
+      "entity_name": "Unknown Entity X",
+      "confidence_score": 0.41,
+      "method_used": "unresolved",
+      "status": "kept_separate",
+      "timestamp": "2026-09-01T15:31:40Z"
+    },
+    {
+      "id": "er-1010",
+      "source_record_id": "raw-jb-513",
+      "target_record_id": "ent-jb-023",
+      "entity_type": "job",
+      "entity_name": "Founding AI Infra Engineer - Synthflow",
+      "confidence_score": 0.99,
+      "method_used": "normalized",
+      "status": "merged",
+      "timestamp": "2026-09-01T15:32:05Z"
+    },
+    {
+      "id": "er-1011",
+      "source_record_id": "raw-nw-702",
+      "target_record_id": "ent-nw-004",
+      "entity_type": "news",
+      "entity_name": "EU AI Act Compliance Guide",
+      "confidence_score": 1.0,
+      "method_used": "exact",
+      "status": "merged",
+      "timestamp": "2026-09-01T15:32:28Z"
+    },
+    {
+      "id": "er-1012",
+      "source_record_id": "raw-pr-110",
+      "target_record_id": "ent-pr-017",
+      "entity_type": "product",
+      "entity_name": "FastEmbed Py",
+      "confidence_score": 0.88,
+      "method_used": "fuzzy",
+      "status": "needs_review",
+      "timestamp": "2026-09-01T15:32:55Z"
+    },
+    {
+      "id": "er-1013",
+      "source_record_id": "raw-rp-306",
+      "target_record_id": "ent-rp-098",
+      "entity_type": "research_paper",
+      "entity_name": "Unindexed Preprint Paper",
+      "confidence_score": 0.35,
+      "method_used": "unresolved",
+      "status": "kept_separate",
+      "timestamp": "2026-09-01T15:33:10Z"
+    },
+    {
+      "id": "er-1014",
+      "source_record_id": "raw-st-045",
+      "target_record_id": "ent-st-003",
+      "entity_type": "startup",
+      "entity_name": "QuantaDB Systems",
+      "confidence_score": 0.97,
+      "method_used": "normalized",
+      "status": "merged",
+      "timestamp": "2026-09-01T15:33:30Z"
+    },
+    {
+      "id": "er-1015",
+      "source_record_id": "raw-jb-514",
+      "target_record_id": "ent-jb-024",
+      "entity_type": "job",
+      "entity_name": "Staff Streaming Data Eng @ Hyperline",
+      "confidence_score": 1.0,
+      "method_used": "exact",
+      "status": "merged",
+      "timestamp": "2026-09-01T15:33:50Z"
+    }
+  ]
+}

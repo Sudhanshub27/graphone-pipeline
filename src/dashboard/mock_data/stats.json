@@ -1,0 +1,27 @@
+{
+  "status": "idle",
+  "lastRunAt": "2026-09-01T15:33:00Z",
+  "totalRecords": 1420,
+  "entities": {
+    "startup": {
+      "count": 342,
+      "sparkline": [310, 318, 325, 330, 336, 340, 342]
+    },
+    "product": {
+      "count": 485,
+      "sparkline": [420, 435, 450, 462, 470, 480, 485]
+    },
+    "research_paper": {
+      "count": 218,
+      "sparkline": [195, 200, 204, 210, 212, 215, 218]
+    },
+    "job": {
+      "count": 265,
+      "sparkline": [230, 240, 248, 252, 258, 262, 265]
+    },
+    "news": {
+      "count": 110,
+      "sparkline": [85, 92, 98, 102, 105, 108, 110]
+    }
+  }
+}

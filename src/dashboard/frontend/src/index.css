@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #0a0b0d;
+    color: #e6e6e6;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+/* Custom Scrollbar for Terminal Log Viewer and Data Tables */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0b0d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f2124;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2d3035;
+}
+
+/* Tabular Nums for Monospace Data Columns */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* CMD-K Command Palette Styling */
+[cmdk-root] {
+  max-width: 600px;
+  width: 100%;
+  background: #131417;
+  border: 1px solid #1f2124;
+  border-radius: 4px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+}
+
+[cmdk-input] {
+  width: 100%;
+  background: transparent;
+  padding: 12px 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: #e6e6e6;
+  border: none;
+  border-bottom: 1px solid #1f2124;
+  outline: none;
+}
+
+[cmdk-item] {
+  content-visibility: auto;
+  cursor: pointer;
+  height: 40px;
+  border-radius: 4px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  color: #8b8f94;
+  user-select: none;
+  will-change: background, color;
+  transition: all 150ms ease;
+}
+
+[cmdk-item][data-selected='true'] {
+  background: #1f2124;
+  color: #e6e6e6;
+}
+
+[cmdk-group-heading] {
+  user-select: none;
+  font-size: 11px;
+  font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #4a4d52;
+  padding: 8px 12px 4px;
+}

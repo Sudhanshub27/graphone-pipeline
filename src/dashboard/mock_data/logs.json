@@ -1,0 +1,29 @@
+{
+  "scrape.log": [
+    {"timestamp": "2026-09-01T15:30:00Z", "level": "INFO", "message": "Initiating async scrape session target=TechCrunch batch_size=20"},
+    {"timestamp": "2026-09-01T15:30:02Z", "level": "INFO", "message": "Playwright headless browser launched Chromium pid=48210"},
+    {"timestamp": "2026-09-01T15:30:05Z", "level": "INFO", "message": "Fetched URL status=200 url=https://techcrunch.com/2026/08/28/cogna-ai-series-a response_size_kb=142.8"},
+    {"timestamp": "2026-09-01T15:30:08Z", "level": "WARN", "message": "Rate limit threshold reached domain=producthunt.com applied_backoff_sec=2.5"},
+    {"timestamp": "2026-09-01T15:30:12Z", "level": "INFO", "message": "Fetched URL status=200 url=https://producthunt.com/posts/prompt-guard-v2 response_size_kb=98.4"},
+    {"timestamp": "2026-09-01T15:30:15Z", "level": "ERROR", "message": "HTTP request timeout url=https://slow-source.org/api/feed attempt=1/3 retry_after=4s"},
+    {"timestamp": "2026-09-01T15:30:20Z", "level": "INFO", "message": "Retried request successful url=https://slow-source.org/api/feed status=200"},
+    {"timestamp": "2026-09-01T15:30:25Z", "level": "INFO", "message": "Scrape worker completed total_pages=45 success_count=44 fail_count=1"}
+  ],
+  "llm_extraction.log": [
+    {"timestamp": "2026-09-01T15:31:00Z", "level": "INFO", "message": "Starting LLM extraction queue target_schema=Startup provider=Gemini-1.5-Pro"},
+    {"timestamp": "2026-09-01T15:31:04Z", "level": "INFO", "message": "Extracted record schema=Startup name='Cogna AI' latency_ms=410 tokens_used=1240"},
+    {"timestamp": "2026-09-01T15:31:08Z", "level": "WARN", "message": "Gemini rate limit exceeded HTTP status=429. Cascading fallback to secondary provider Groq"},
+    {"timestamp": "2026-09-01T15:31:10Z", "level": "INFO", "message": "Groq fallback successful model=llama3-70b latency_ms=175 tokens_used=980"},
+    {"timestamp": "2026-09-01T15:31:15Z", "level": "ERROR", "message": "Schema validation failed field='founding_year' raw_val='Unknown' schema=Startup. Triggering repair prompt"},
+    {"timestamp": "2026-09-01T15:31:18Z", "level": "INFO", "message": "Schema repair successful corrected_field='founding_year' val=2023"},
+    {"timestamp": "2026-09-01T15:31:22Z", "level": "INFO", "message": "Completed LLM batch total_processed=50 success=50 fallback_count=4"}
+  ],
+  "entity_resolution.log": [
+    {"timestamp": "2026-09-01T15:32:00Z", "level": "INFO", "message": "Starting Entity Resolution pipeline input_records=1420"},
+    {"timestamp": "2026-09-01T15:32:05Z", "level": "INFO", "message": "Exact match pass completed matches_found=852 deduplicated_pct=60.0%"},
+    {"timestamp": "2026-09-01T15:32:10Z", "level": "INFO", "message": "Normalized text pass completed matches_found=355 deduplicated_pct=25.0%"},
+    {"timestamp": "2026-09-01T15:32:15Z", "level": "WARN", "message": "Fuzzy match similarity score 0.79 below auto-merge threshold (0.85). Flagged for manual review entity='DocuAgent AI'"},
+    {"timestamp": "2026-09-01T15:32:20Z", "level": "ERROR", "message": "Unresolved entity cluster low confidence=0.41 entity='Unknown Entity X'. Kept separate"},
+    {"timestamp": "2026-09-01T15:32:25Z", "level": "INFO", "message": "Entity Resolution pass finished total_unique_entities=1194 flagged_review=142"}
+  ]
+}

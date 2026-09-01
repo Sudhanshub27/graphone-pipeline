@@ -1,0 +1,185 @@
+import React from "react";
+import { AnimatedCounter } from "../components/AnimatedCounter";
+import { Sparkline } from "../components/Sparkline";
+import { Rocket, Package, FileText, Briefcase, Newspaper, Cpu, GitMerge } from "lucide-react";
+
+interface OverviewPageProps {
+  stats: any;
+  onNavigateEntity: (entityType: string) => void;
+}
+
+export const OverviewPage: React.FC<OverviewPageProps> = ({ stats, onNavigateEntity }) => {
+  const entityCards = [
+    { key: "startup", label: "Startups", icon: Rocket, color: "#7ee787" },
+    { key: "product", label: "Products", icon: Package, color: "#e6e6e6" },
+    { key: "research_paper", label: "Research Papers", icon: FileText, color: "#6e9fe0" },
+    { key: "job", label: "Jobs", icon: Briefcase, color: "#e8b339" },
+    { key: "news", label: "News", icon: Newspaper, color: "#8b8f94" },
+  ];
+
+  const llmTiers = stats?.llm?.tiers || [
+    { name: "Gemini 1.5 Pro", provider: "Gemini", count: 1074, percentage: 68.0, avgLatencyMs: 420 },
+    { name: "Groq Llama 3 70B", provider: "Groq", count: 348, percentage: 22.0, avgLatencyMs: 180 },
+    { name: "DeepSeek V3", provider: "DeepSeek", count: 158, percentage: 10.0, avgLatencyMs: 650 },
+  ];
+
+  const erBreakdown = [
+    { label: "Exact Match", count: 852, pct: 60.0, color: "#7ee787" },
+    { label: "Normalized", count: 355, pct: 25.0, color: "#6e9fe0" },
+    { label: "Fuzzy Review", count: 142, pct: 10.0, color: "#e8b339" },
+    { label: "Unresolved", count: 71, pct: 5.0, color: "#e5534b" },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Subtle Radial Glow Behind Stat Row */}
+      <div className="relative">
+        <div className="absolute -inset-2 bg-radial from-[#7ee787]/5 to-transparent blur-xl pointer-events-none" />
+
+        {/* 5 Top Stat Cards */}
+        <div className="grid grid-cols-5 gap-3 relative z-10">
+          {entityCards.map((card) => {
+            const dataObj = stats?.entities?.[card.key] || { count: 0, sparkline: [0, 0, 0, 0, 0, 0, 0] };
+            const Icon = card.icon;
+            return (
+              <div
+                key={card.key}
+                onClick={() => onNavigateEntity(card.key)}
+                className="p-4 rounded bg-[#131417] border border-[#1f2124] hover:border-[#2d3035] transition-all cursor-pointer group flex flex-col justify-between h-28 select-none"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-[#8b8f94] group-hover:text-[#e6e6e6] transition-colors flex items-center gap-1.5">
+                    <Icon className="w-3.5 h-3.5 text-[#4a4d52] group-hover:text-[#7ee787] transition-colors" />
+                    {card.label}
+                  </span>
+                  <Sparkline data={dataObj.sparkline} width={48} height={18} color={card.color} />
+                </div>
+
+                <div>
+                  <div className="text-2xl font-bold text-[#e6e6e6]">
+                    <AnimatedCounter value={dataObj.count} />
+                  </div>
+                  <p className="text-[10px] font-mono text-[#4a4d52] mt-0.5">Validated Records</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Two Side-by-Side Breakdown Panels */}
+      <div className="grid grid-cols-2 gap-4">
+        {/* LLM Tier Usage Panel */}
+        <div className="p-5 rounded bg-[#131417] border border-[#1f2124] space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-[#7ee787]" />
+              <h2 className="text-xs font-bold font-mono tracking-tight text-[#e6e6e6]">
+                LLM ORCHESTRATION & FALLBACK TIER USAGE
+              </h2>
+            </div>
+            <span className="font-mono text-[10px] text-[#8b8f94]">
+              {stats?.llm?.totalCalls || 1580} Calls
+            </span>
+          </div>
+
+          {/* Horizontal Stacked Bar */}
+          <div className="w-full h-4 rounded overflow-hidden flex bg-[#0a0b0d] border border-[#1f2124]">
+            {llmTiers.map((tier: any, idx: number) => {
+              const bgColors = ["bg-[#7ee787]", "bg-[#6e9fe0]", "bg-[#e8b339]"];
+              return (
+                <div
+                  key={idx}
+                  style={{ width: `${tier.percentage}%` }}
+                  className={`${bgColors[idx % bgColors.length]} h-full transition-all group relative cursor-pointer opacity-90 hover:opacity-100`}
+                  title={`${tier.name}: ${tier.count} calls (${tier.percentage}%)`}
+                />
+              );
+            })}
+          </div>
+
+          {/* Legend and Exact Counts */}
+          <div className="space-y-2 pt-1">
+            {llmTiers.map((tier: any, idx: number) => {
+              const dotColors = ["bg-[#7ee787]", "bg-[#6e9fe0]", "bg-[#e8b339]"];
+              return (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between text-xs font-mono p-2 rounded bg-[#0a0b0d]/60 border border-[#1f2124]/50"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${dotColors[idx % dotColors.length]}`} />
+                    <span className="text-[#e6e6e6] font-medium">{tier.name}</span>
+                    <span className="text-[10px] text-[#4a4d52]">({tier.provider})</span>
+                  </div>
+
+                  <div className="flex items-center gap-4 text-right">
+                    <span className="text-[#8b8f94]">{tier.avgLatencyMs}ms avg</span>
+                    <span className="text-[#e6e6e6] font-bold w-12 tabular-nums">
+                      {tier.count}
+                    </span>
+                    <span className="text-[#7ee787] w-12 font-bold tabular-nums">
+                      {tier.percentage}%
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Entity Resolution Breakdown Panel */}
+        <div className="p-5 rounded bg-[#131417] border border-[#1f2124] space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <GitMerge className="w-4 h-4 text-[#e8b339]" />
+              <h2 className="text-xs font-bold font-mono tracking-tight text-[#e6e6e6]">
+                ENTITY RESOLUTION & DEDUPLICATION BREAKDOWN
+              </h2>
+            </div>
+            <span className="font-mono text-[10px] text-[#8b8f94]">1,420 Deduplicated</span>
+          </div>
+
+          {/* Horizontal Stacked Bar */}
+          <div className="w-full h-4 rounded overflow-hidden flex bg-[#0a0b0d] border border-[#1f2124]">
+            {erBreakdown.map((item, idx) => (
+              <div
+                key={idx}
+                style={{ width: `${item.pct}%`, backgroundColor: item.color }}
+                className="h-full transition-all opacity-90 hover:opacity-100 cursor-pointer"
+                title={`${item.label}: ${item.count} (${item.pct}%)`}
+              />
+            ))}
+          </div>
+
+          {/* Legend and Breakdown */}
+          <div className="space-y-2 pt-1">
+            {erBreakdown.map((item, idx) => (
+              <div
+                key={idx}
+                className="flex items-center justify-between text-xs font-mono p-2 rounded bg-[#0a0b0d]/60 border border-[#1f2124]/50"
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <span className="text-[#e6e6e6] font-medium">{item.label}</span>
+                </div>
+
+                <div className="flex items-center gap-4 text-right">
+                  <span className="text-[#e6e6e6] font-bold w-12 tabular-nums">
+                    {item.count}
+                  </span>
+                  <span className="w-12 font-bold tabular-nums" style={{ color: item.color }}>
+                    {item.pct}%
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -1,0 +1,35 @@
+{
+  "totalCalls": 1580,
+  "tiers": [
+    {
+      "name": "Gemini 1.5 Pro",
+      "provider": "Gemini",
+      "tier": "Primary",
+      "count": 1074,
+      "percentage": 68.0,
+      "avgLatencyMs": 420,
+      "successRate": 98.2,
+      "tokenCount": 1845000
+    },
+    {
+      "name": "Groq Llama 3 70B",
+      "provider": "Groq",
+      "tier": "Secondary",
+      "count": 348,
+      "percentage": 22.0,
+      "avgLatencyMs": 180,
+      "successRate": 99.4,
+      "tokenCount": 620000
+    },
+    {
+      "name": "DeepSeek V3",
+      "provider": "DeepSeek",
+      "tier": "Fallback",
+      "count": 158,
+      "percentage": 10.0,
+      "avgLatencyMs": 650,
+      "successRate": 96.8,
+      "tokenCount": 310000
+    }
+  ]
+}
