@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     DEEPSEEK_API_KEY: Optional[str] = Field(
         default=None, description="API Key for DeepSeek LLM provider"
     )
+    GITHUB_TOKEN: Optional[str] = Field(
+        default=None, description="GitHub Personal Access Token for rate limit increase"
+    )
     GOOGLE_SHEETS_CREDS: Optional[str] = Field(
         default=None,
         description="Path to Google Sheets service account credentials JSON or raw credentials",
