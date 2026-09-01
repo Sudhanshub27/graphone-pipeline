@@ -281,6 +281,12 @@ async def run_research_paper_pipeline(limit: int = 150) -> List[ResearchPaper]:
         await pwc_scraper.close()
 
 
+async def run_research_papers_pipeline(target_limit: int = 150) -> Dict[str, Any]:
+    """Orchestrator helper returning summary dict for main CLI runner."""
+    papers = await run_research_paper_pipeline(limit=target_limit)
+    return {"records_written": len(papers), "papers": papers}
+
+
 def main():
     parser = argparse.ArgumentParser(description="Scrape research papers from ArXiv & PapersWithCode APIs.")
     parser.add_argument(

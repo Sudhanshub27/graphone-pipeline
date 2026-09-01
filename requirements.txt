@@ -24,6 +24,8 @@ tiktoken>=0.6.0
 # Export & Integration
 gspread>=6.0.0
 gspread-asyncio>=2.0.0
+google-auth>=2.27.0
+rich>=13.7.0
 
 # Dashboard & Backend API
 fastapi>=0.110.0
