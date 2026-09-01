@@ -2,7 +2,7 @@ from config.settings import settings
 
 
 def test_default_config_settings():
-    assert settings.MAX_CONCURRENT_SCRAPES == 5
+    assert settings.MAX_CONCURRENT_SCRAPES == 20
     assert settings.MAX_CONCURRENT_LLM_CALLS == 3
     assert settings.RATE_LIMIT_PER_MINUTE == 60
     assert settings.HTTP_TIMEOUT_SECONDS == 30
