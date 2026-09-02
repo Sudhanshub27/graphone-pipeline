@@ -12,6 +12,12 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from config.settings import configure_logging, settings
+from src.dashboard.processed_reader import (
+    get_all_processed_records,
+    get_processed_entity_log,
+    get_processed_stats,
+    read_jsonl_records,
+)
 
 configure_logging(settings.LOG_LEVEL)
 logger = structlog.get_logger(__name__)
@@ -52,22 +58,6 @@ def load_mock_json(filename: str) -> Any:
         return json.load(f)
 
 
-def read_processed_jsonl(filename: str) -> List[Dict[str, Any]]:
-    file_path = PROCESSED_DIR / filename
-    if not file_path.exists():
-        return []
-    records = []
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line:
-                    records.append(json.loads(line))
-    except Exception as e:
-        logger.error("Failed reading JSONL file", filename=filename, error=str(e))
-    return records
-
-
 @app.on_event("startup")
 async def startup_event():
     settings.setup_directories()
@@ -77,47 +67,30 @@ async def startup_event():
 @app.get("/api/stats")
 async def get_stats() -> Dict[str, Any]:
     """Get aggregated statistics across entity types, 7-run sparklines, and LLM tier breakdown."""
-    startups = read_processed_jsonl("startups.jsonl")
-    products = read_processed_jsonl("products.jsonl")
-    papers = read_processed_jsonl("research_papers.jsonl")
-    jobs = read_processed_jsonl("jobs.jsonl")
-    news = read_processed_jsonl("news.jsonl")
+    if settings.MOCK_MODE:
+        stats_data = load_mock_json("stats.json")
+        llm_data = load_mock_json("llm_stats.json")
+        if isinstance(stats_data, dict):
+            stats_data["status"] = pipeline_state["status"]
+            if pipeline_state["status"] == "running":
+                stats_data["currentStage"] = pipeline_state["current_stage"]
+                stats_data["progressPct"] = pipeline_state["progress_pct"]
+            stats_data["llm"] = llm_data
+            return stats_data
 
-    total_real = len(startups) + len(products) + len(papers) + len(jobs) + len(news)
-
-    # Base mock fallback stats
-    stats_data = load_mock_json("stats.json")
-    llm_data = load_mock_json("llm_stats.json")
-
-    if not isinstance(stats_data, dict):
-        stats_data = {
-            "status": "idle",
-            "lastRunAt": pipeline_state["last_run_at"],
-            "totalRecords": 0,
-            "entities": {
-                "startup": {"count": 0, "sparkline": [0, 0, 0, 0, 0, 0, 0]},
-                "product": {"count": 0, "sparkline": [0, 0, 0, 0, 0, 0, 0]},
-                "research_paper": {"count": 0, "sparkline": [0, 0, 0, 0, 0, 0, 0]},
-                "job": {"count": 0, "sparkline": [0, 0, 0, 0, 0, 0, 0]},
-                "news": {"count": 0, "sparkline": [0, 0, 0, 0, 0, 0, 0]},
-            },
-        }
-
-    # If real data exists, update counts
-    if total_real > 0:
-        stats_data["totalRecords"] = total_real
-        stats_data["entities"]["startup"]["count"] = max(len(startups), stats_data["entities"]["startup"].get("count", 0))
-        stats_data["entities"]["product"]["count"] = max(len(products), stats_data["entities"]["product"].get("count", 0))
-        stats_data["entities"]["research_paper"]["count"] = max(len(papers), stats_data["entities"]["research_paper"].get("count", 0))
-        stats_data["entities"]["job"]["count"] = max(len(jobs), stats_data["entities"]["job"].get("count", 0))
-        stats_data["entities"]["news"]["count"] = max(len(news), stats_data["entities"]["news"].get("count", 0))
+    # Real data processing pathway
+    stats_data = get_processed_stats()
+    if stats_data.get("totalRecords", 0) == 0:
+        mock_stats = load_mock_json("stats.json")
+        if isinstance(mock_stats, dict):
+            stats_data = mock_stats
+            stats_data["llm"] = load_mock_json("llm_stats.json")
 
     stats_data["status"] = pipeline_state["status"]
     if pipeline_state["status"] == "running":
         stats_data["currentStage"] = pipeline_state["current_stage"]
         stats_data["progressPct"] = pipeline_state["progress_pct"]
 
-    stats_data["llm"] = llm_data
     return stats_data
 
 
@@ -127,7 +100,7 @@ async def get_records(
     search: Optional[str] = Query(default=None, description="Client fuzzy search query"),
 ) -> List[Dict[str, Any]]:
     """Fetch entity records for startup, product, research_paper, job, or news."""
-    jsonl_mapping = {
+    type_mapping = {
         "startup": ("startups.jsonl", "startups.json"),
         "product": ("products.jsonl", "products.json"),
         "research_paper": ("research_papers.jsonl", "research_papers.json"),
@@ -135,19 +108,22 @@ async def get_records(
         "news": ("news.jsonl", "news.json"),
     }
 
-    if record_type not in jsonl_mapping:
+    if record_type not in type_mapping:
         raise HTTPException(
             status_code=400,
-            detail=f"Invalid entity record_type '{record_type}'. Must be one of {list(jsonl_mapping.keys())}",
+            detail=f"Invalid entity record_type '{record_type}'. Must be one of {list(type_mapping.keys())}",
         )
 
-    jsonl_file, mock_file = jsonl_mapping[record_type]
-    records = read_processed_jsonl(jsonl_file)
+    jsonl_file, mock_file = type_mapping[record_type]
 
-    # Fallback to mock records if processed file is empty
-    if not records:
-        mock_res = load_mock_json(mock_file)
-        records = mock_res if isinstance(mock_res, list) else []
+    if settings.MOCK_MODE:
+        records = load_mock_json(mock_file)
+        records = records if isinstance(records, list) else []
+    else:
+        records = read_jsonl_records(jsonl_file)
+        if not records:
+            mock_res = load_mock_json(mock_file)
+            records = mock_res if isinstance(mock_res, list) else []
 
     if search:
         query = search.lower()
@@ -163,48 +139,13 @@ async def get_records(
 @app.get("/api/entity-log")
 async def get_entity_log() -> Dict[str, Any]:
     """Fetch Entity Resolution logs and method breakdown."""
-    raw_logs = read_processed_jsonl("entity_mapping_log.jsonl")
-    if raw_logs:
-        formatted_entries = []
-        for idx, r in enumerate(raw_logs):
-            raw_name = r.get("raw_name") or r.get("entity_name") or "Unknown Entity"
-            canon_name = r.get("canonical_name") or r.get("entity_name") or raw_name
-            method = r.get("method_used", "unresolved")
-            conf = float(r.get("confidence_score", 0.5))
-            
-            entry = {
-                "id": r.get("id") or f"er-{idx + 1001}",
-                "entity_name": canon_name if canon_name else raw_name,
-                "raw_name": raw_name,
-                "canonical_name": canon_name,
-                "entity_type": r.get("entity_type") or "startup",
-                "method_used": method,
-                "confidence_score": conf,
-                "status": r.get("status") or ("merged" if canon_name and method != "unresolved" else ("needs_review" if conf >= 0.5 else "kept_separate")),
-                "timestamp": r.get("timestamp") or datetime.now(timezone.utc).isoformat(),
-            }
-            formatted_entries.append(entry)
+    if settings.MOCK_MODE:
+        mock_log = load_mock_json("entity_resolution_log.json")
+        return mock_log if isinstance(mock_log, dict) else {"summary": {}, "entries": []}
 
-        exact = sum(1 for r in formatted_entries if r["method_used"] == "exact")
-        norm = sum(1 for r in formatted_entries if r["method_used"] == "normalized")
-        fuzzy = sum(1 for r in formatted_entries if r["method_used"] == "fuzzy")
-        unres = sum(1 for r in formatted_entries if r["method_used"] == "unresolved")
-        total = len(formatted_entries) or 1
-
-        return {
-            "summary": {
-                "totalProcessed": total,
-                "exactMatchCount": exact,
-                "exactMatchPct": round((exact / total) * 100, 1),
-                "normalizedCount": norm,
-                "normalizedPct": round((norm / total) * 100, 1),
-                "fuzzyCount": fuzzy,
-                "fuzzyPct": round((fuzzy / total) * 100, 1),
-                "unresolvedCount": unres,
-                "unresolvedPct": round((unres / total) * 100, 1),
-            },
-            "entries": formatted_entries,
-        }
+    res_log = get_processed_entity_log()
+    if res_log.get("entries"):
+        return res_log
 
     mock_log = load_mock_json("entity_resolution_log.json")
     return mock_log if isinstance(mock_log, dict) else {"summary": {}, "entries": []}

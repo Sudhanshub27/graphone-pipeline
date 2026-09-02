@@ -129,9 +129,12 @@ SAMPLE_PRODUCT_HTML = [
 class PipelineOrchestrator:
     """Master orchestrator executing pipeline stages with rich CLI metrics reporting."""
 
-    def __init__(self, dry_run: bool = False, limit: int = 20):
+    def __init__(self, dry_run: bool = False, limit: Optional[int] = None):
         self.dry_run = dry_run
-        self.limit = 5 if dry_run else limit
+        if limit is not None:
+            self.limit = limit
+        else:
+            self.limit = 5 if dry_run else 20
         self.resolver = EntityResolver()
         self.llm_chain = FallbackChain()
         self.metrics: Dict[str, Any] = {

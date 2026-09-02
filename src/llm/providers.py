@@ -62,10 +62,10 @@ class LLMProvider(abc.ABC):
 
 
 class GeminiProvider(LLMProvider):
-    """Tier-1 LLM Provider: Google Gemini 1.5 Flash."""
+    """Tier-1 LLM Provider: Google Gemini 2.5 Flash."""
 
     def __init__(self, api_key: Optional[str] = None):
-        super().__init__(name="Gemini-1.5-Flash", requests_per_minute=60)
+        super().__init__(name="Gemini-2.5-Flash", requests_per_minute=60)
         self.api_key = api_key or settings.GEMINI_API_KEY
 
     async def extract(self, text: str, schema: Type[BaseModel]) -> Dict[str, Any]:
@@ -74,7 +74,9 @@ class GeminiProvider(LLMProvider):
 
         import google.generativeai as genai
         genai.configure(api_key=self.api_key)
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        
+        # Use active Gemini model identifier
+        model = genai.GenerativeModel("gemini-3.6-flash")
 
         prompt = self.build_prompt(text, schema)
         await self.rate_limiter.acquire()
@@ -93,10 +95,10 @@ class GeminiProvider(LLMProvider):
 
 
 class GroqProvider(LLMProvider):
-    """Tier-2 LLM Provider: Groq (Llama-3 70B / 8B)."""
+    """Tier-2 LLM Provider: Groq."""
 
-    def __init__(self, api_key: Optional[str] = None, model_name: str = "llama3-70b-8192"):
-        super().__init__(name="Groq-Llama3", requests_per_minute=60)
+    def __init__(self, api_key: Optional[str] = None, model_name: str = "openai/gpt-oss-120b"):
+        super().__init__(name="Groq-Llama", requests_per_minute=60)
         self.api_key = api_key or settings.GROQ_API_KEY
         self.model_name = model_name
 
