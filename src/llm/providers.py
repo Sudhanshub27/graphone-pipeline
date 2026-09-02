@@ -65,10 +65,10 @@ class LLMProvider(abc.ABC):
 
 
 class GeminiProvider(LLMProvider):
-    """Tier-1 LLM Provider: Google Gemini 2.5 Flash."""
+    """Tier-1 LLM Provider: Google Gemini 2.0 / 1.5 Flash."""
 
     def __init__(self, api_key: Optional[str] = None):
-        super().__init__(name="Gemini-3.6-Flash", requests_per_minute=60)
+        super().__init__(name="Gemini-Flash", requests_per_minute=60)
         self.api_key = api_key or settings.GEMINI_API_KEY
 
     async def extract(self, text: str, schema: Type[BaseModel]) -> Dict[str, Any]:
@@ -77,24 +77,42 @@ class GeminiProvider(LLMProvider):
 
         import google.generativeai as genai
         genai.configure(api_key=self.api_key)
-        
-        # Use active Gemini model identifier
-        model = genai.GenerativeModel("gemini-3.6-flash")
 
         prompt = self.build_prompt(text, schema)
         await self.rate_limiter.acquire()
 
-        async def _call():
-            import asyncio
-            response = await asyncio.to_thread(model.generate_content, prompt)
-            return response.text
+        models_to_try = ["gemini-2.0-flash", "gemini-1.5-flash"]
+        last_error = None
 
-        raw_response = await execute_with_429_retry(_call, self.name)
-        json_dict = clean_and_parse_json(raw_response)
+        for model_name in models_to_try:
+            try:
+                model = genai.GenerativeModel(model_name)
 
-        # Validate with Pydantic schema
-        validated_model = schema.model_validate(json_dict)
-        return validated_model.model_dump(mode="json")
+                async def _call():
+                    import asyncio
+                    response = await asyncio.to_thread(model.generate_content, prompt)
+                    return response.text
+
+                raw_response = await execute_with_429_retry(_call, f"{self.name} ({model_name})")
+                json_dict = clean_and_parse_json(raw_response)
+
+                validated_model = schema.model_validate(json_dict)
+                return validated_model.model_dump(mode="json")
+            except Exception as e:
+                last_error = e
+                err_str = str(e).lower()
+                if "quota exceeded" in err_str or "429" in err_str or "resourceexhausted" in type(e).__name__.lower() or "limit: 20" in err_str:
+                    logger.warning(
+                        "Gemini model quota exhausted, cascading to next model/provider",
+                        model=model_name,
+                        error=str(e),
+                    )
+                    continue
+                raise e
+
+        if last_error:
+            raise last_error
+
 
 
 class GroqProvider(LLMProvider):

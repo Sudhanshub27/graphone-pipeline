@@ -187,7 +187,11 @@ class FallbackChain:
                 )
                 return result, provider.name
 
-            except Exception as e:
+            except (Exception, asyncio.CancelledError, asyncio.TimeoutError, BaseException) as e:
+                # If keyboard interrupt (Ctrl+C), re-raise to allow user to exit
+                if isinstance(e, KeyboardInterrupt):
+                    raise e
+
                 error_msg = f"[{provider.name}] {type(e).__name__}: {str(e)}"
                 logger.warning(
                     "Tier extraction failed, cascading to next tier",
@@ -200,3 +204,4 @@ class FallbackChain:
         # Step 3: All providers failed -> save raw payload to failed_extractions/
         save_failed_extraction(text, schema_name, errors)
         return None, "FAILED_ALL_PROVIDERS"
+

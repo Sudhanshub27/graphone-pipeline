@@ -74,13 +74,14 @@ def extract_retry_after(exception: Exception) -> Optional[float]:
 async def execute_with_429_retry(
     func: Callable[..., Any],
     provider_name: str,
-    max_attempts: int = 4,
+    max_attempts: int = 2,
     *args,
     **kwargs,
 ) -> Any:
     """
     Execute LLM call with exponential backoff + full jitter for 429 rate limit responses,
     respecting Retry-After headers when provided.
+    Fails fast if daily quota is permanently exhausted.
     """
     last_exception = None
     for attempt in range(1, max_attempts + 1):
@@ -88,20 +89,30 @@ async def execute_with_429_retry(
             return await func(*args, **kwargs)
         except Exception as e:
             last_exception = e
+            err_str = str(e).lower()
+
+            # Fail fast on daily / project API quota exhaustion (don't retry un-retryable quota limits)
+            if "quota exceeded" in err_str or "free_tier_requests" in err_str or "limit: 20" in err_str:
+                logger.warning(
+                    "Daily API quota exhausted, escalating to fallback chain",
+                    provider=provider_name,
+                    error=str(e),
+                )
+                raise ProviderRateLimitError(provider_name, message=str(e)) from e
+
             status_code = getattr(e, "status_code", None) or getattr(e, "status", None)
-            is_429 = status_code == 429 or "429" in str(e) or "rate limit" in str(e).lower()
+            is_429 = status_code == 429 or "429" in err_str or "rate limit" in err_str or "resourceexhausted" in type(e).__name__.lower()
 
             if not is_429 or attempt == max_attempts:
                 raise e
 
             retry_after = extract_retry_after(e)
             if retry_after is not None:
-                sleep_seconds = max(1.0, retry_after)
+                sleep_seconds = min(2.0, max(0.5, retry_after))
             else:
-                # Exponential backoff with full jitter: 2^(attempt-1) * random(0.5, 1.5)
-                base = 2.0 ** (attempt - 1)
-                jitter = random.uniform(0.5, 1.5)
-                sleep_seconds = base * jitter
+                base = 1.5 ** (attempt - 1)
+                jitter = random.uniform(0.5, 1.2)
+                sleep_seconds = min(2.0, base * jitter)
 
             logger.warning(
                 "429 Rate limit encountered, backing off",
@@ -114,3 +125,4 @@ async def execute_with_429_retry(
 
     if last_exception:
         raise last_exception
+
