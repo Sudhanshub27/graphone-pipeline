@@ -1,17 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { LayoutDashboard, Database, GitMerge, Terminal, Search } from "lucide-react";
 
 interface SidebarProps {
   currentRoute: string;
   onNavigate: (route: string) => void;
   onOpenCmdK: () => void;
+  mockMode?: boolean;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   currentRoute,
   onNavigate,
   onOpenCmdK,
+  mockMode: mockModeProp,
 }) => {
+  const [mockMode, setMockMode] = useState<boolean>(mockModeProp ?? false);
+
+  useEffect(() => {
+    if (mockModeProp !== undefined) {
+      setMockMode(mockModeProp);
+    } else {
+      fetch("/api/config")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && typeof data.mockMode === "boolean") {
+            setMockMode(data.mockMode);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [mockModeProp]);
+
   const navItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard },
     { id: "browser", label: "Data Browser", icon: Database },
@@ -78,9 +97,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-3 border-t border-[#1f2124] bg-[#0a0b0d]/50">
         <div className="flex items-center justify-between font-mono text-[10px] text-[#4a4d52]">
           <span>MOCK_MODE</span>
-          <span className="text-[#7ee787] font-semibold">ACTIVE</span>
+          <span className={mockMode ? "text-[#7ee787] font-semibold" : "text-[#8b8f94] font-semibold"}>
+            {mockMode ? "ACTIVE" : "OFF (LIVE)"}
+          </span>
         </div>
       </div>
     </aside>
   );
 };
+

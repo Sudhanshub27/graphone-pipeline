@@ -66,7 +66,9 @@ export const App: React.FC = () => {
         currentRoute={currentRoute}
         onNavigate={(route) => setCurrentRoute(route)}
         onOpenCmdK={() => setCmdKOpen(true)}
+        mockMode={stats?.mockMode ?? stats?.mock_mode}
       />
+
 
       {/* Main Content Area (Margin Left 220px) */}
       <div className="flex-1 ml-[220px] flex flex-col min-w-0 min-h-screen">

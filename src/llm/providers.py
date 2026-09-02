@@ -65,7 +65,7 @@ class LLMProvider(abc.ABC):
 
 
 class GeminiProvider(LLMProvider):
-    """Tier-1 LLM Provider: Google Gemini 2.0 / 1.5 Flash."""
+    """Tier-1 LLM Provider: Google Gemini 1.5 Flash / 1.5 Pro."""
 
     def __init__(self, api_key: Optional[str] = None):
         super().__init__(name="Gemini-Flash", requests_per_minute=60)
@@ -81,7 +81,7 @@ class GeminiProvider(LLMProvider):
         prompt = self.build_prompt(text, schema)
         await self.rate_limiter.acquire()
 
-        models_to_try = ["gemini-2.0-flash", "gemini-1.5-flash"]
+        models_to_try = ["gemini-1.5-flash", "gemini-1.5-pro"]
         last_error = None
 
         for model_name in models_to_try:
@@ -101,9 +101,17 @@ class GeminiProvider(LLMProvider):
             except Exception as e:
                 last_error = e
                 err_str = str(e).lower()
-                if "quota exceeded" in err_str or "429" in err_str or "resourceexhausted" in type(e).__name__.lower() or "limit: 20" in err_str:
+                if (
+                    "quota exceeded" in err_str
+                    or "429" in err_str
+                    or "resourceexhausted" in type(e).__name__.lower()
+                    or "limit: 20" in err_str
+                    or "404" in err_str
+                    or "not found" in err_str
+                    or "no longer available" in err_str
+                ):
                     logger.warning(
-                        "Gemini model quota exhausted, cascading to next model/provider",
+                        "Gemini model unavailable or rate limited, trying fallback model",
                         model=model_name,
                         error=str(e),
                     )
@@ -114,12 +122,11 @@ class GeminiProvider(LLMProvider):
             raise last_error
 
 
-
 class GroqProvider(LLMProvider):
-    """Tier-2 LLM Provider: Groq."""
+    """Tier-2 LLM Provider: Groq (Llama 3.3 70B / Llama 3 70B)."""
 
-    def __init__(self, api_key: Optional[str] = None, model_name: str = "openai/gpt-oss-120b"):
-        super().__init__(name="Groq-GPT-OSS-120B", requests_per_minute=60)
+    def __init__(self, api_key: Optional[str] = None, model_name: str = "llama-3.3-70b-versatile"):
+        super().__init__(name="Groq-Llama3-70B", requests_per_minute=60)
         self.api_key = api_key or settings.GROQ_API_KEY
         self.model_name = model_name
 
@@ -133,24 +140,35 @@ class GroqProvider(LLMProvider):
         prompt = self.build_prompt(text, schema)
         await self.rate_limiter.acquire()
 
-        async def _call():
-            completion = await client.chat.completions.create(
-                model=self.model_name,
-                messages=[
-                    {"role": "system", "content": "You are a JSON extraction model. Output valid JSON only."},
-                    {"role": "user", "content": prompt},
-                ],
-                response_format={"type": "json_object"},
-                temperature=0.1,
-            )
-            return completion.choices[0].message.content
+        models_to_try = [self.model_name, "llama3-70b-8192", "mixtral-8x7b-32768"]
+        last_error = None
 
-        raw_response = await execute_with_429_retry(_call, self.name)
-        json_dict = clean_and_parse_json(raw_response)
+        for model in models_to_try:
+            try:
+                async def _call():
+                    completion = await client.chat.completions.create(
+                        model=model,
+                        messages=[
+                            {"role": "system", "content": "You are a JSON extraction model. Output valid JSON only."},
+                            {"role": "user", "content": prompt},
+                        ],
+                        response_format={"type": "json_object"},
+                        temperature=0.1,
+                    )
+                    return completion.choices[0].message.content
 
-        # Validate with Pydantic schema
-        validated_model = schema.model_validate(json_dict)
-        return validated_model.model_dump(mode="json")
+                raw_response = await execute_with_429_retry(_call, f"{self.name} ({model})")
+                json_dict = clean_and_parse_json(raw_response)
+
+                validated_model = schema.model_validate(json_dict)
+                return validated_model.model_dump(mode="json")
+            except Exception as e:
+                last_error = e
+                logger.warning("Groq model failed, trying fallback model", model=model, error=str(e))
+                continue
+
+        if last_error:
+            raise last_error
 
 
 class DeepSeekProvider(LLMProvider):
@@ -189,3 +207,4 @@ class DeepSeekProvider(LLMProvider):
         # Validate with Pydantic schema
         validated_model = schema.model_validate(json_dict)
         return validated_model.model_dump(mode="json")
+

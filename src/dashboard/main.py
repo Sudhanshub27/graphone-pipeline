@@ -64,6 +64,12 @@ async def startup_event():
     logger.info("Graphone Pipeline Dashboard backend started", mock_mode=settings.MOCK_MODE)
 
 
+@app.get("/api/config")
+async def get_config() -> Dict[str, Any]:
+    """Get runtime pipeline settings and mock_mode status."""
+    return {"mockMode": settings.MOCK_MODE, "mock_mode": settings.MOCK_MODE}
+
+
 @app.get("/api/stats")
 async def get_stats() -> Dict[str, Any]:
     """Get aggregated statistics across entity types, 7-run sparklines, and LLM tier breakdown."""
@@ -76,15 +82,21 @@ async def get_stats() -> Dict[str, Any]:
                 stats_data["currentStage"] = pipeline_state["current_stage"]
                 stats_data["progressPct"] = pipeline_state["progress_pct"]
             stats_data["llm"] = llm_data
+            stats_data["mockMode"] = True
+            stats_data["mock_mode"] = True
             return stats_data
 
     # Real data processing pathway
     stats_data = get_processed_stats()
+    stats_data["mockMode"] = settings.MOCK_MODE
+    stats_data["mock_mode"] = settings.MOCK_MODE
     if stats_data.get("totalRecords", 0) == 0:
         mock_stats = load_mock_json("stats.json")
         if isinstance(mock_stats, dict):
             stats_data = mock_stats
             stats_data["llm"] = load_mock_json("llm_stats.json")
+            stats_data["mockMode"] = settings.MOCK_MODE
+            stats_data["mock_mode"] = settings.MOCK_MODE
 
     stats_data["status"] = pipeline_state["status"]
     if pipeline_state["status"] == "running":
@@ -92,6 +104,7 @@ async def get_stats() -> Dict[str, Any]:
         stats_data["progressPct"] = pipeline_state["progress_pct"]
 
     return stats_data
+
 
 
 @app.get("/api/records/{record_type}")

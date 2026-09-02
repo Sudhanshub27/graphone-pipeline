@@ -9,6 +9,19 @@ interface OverviewPageProps {
 }
 
 export const OverviewPage: React.FC<OverviewPageProps> = ({ stats, onNavigateEntity }) => {
+  const [entityLogSummary, setEntityLogSummary] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    fetch("/api/entity-log")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.summary) {
+          setEntityLogSummary(data.summary);
+        }
+      })
+      .catch((err) => console.error("Failed to load entity log summary", err));
+  }, []);
+
   const entityCards = [
     { key: "startup", label: "Startups", icon: Rocket, color: "#7ee787" },
     { key: "product", label: "Products", icon: Package, color: "#e6e6e6" },
@@ -18,16 +31,39 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ stats, onNavigateEnt
   ];
 
   const llmTiers = stats?.llm?.tiers || [
-    { name: "Gemini 1.5 Pro", provider: "Gemini", count: 1074, percentage: 68.0, avgLatencyMs: 420 },
-    { name: "Groq Llama 3 70B", provider: "Groq", count: 348, percentage: 22.0, avgLatencyMs: 180 },
-    { name: "DeepSeek V3", provider: "DeepSeek", count: 158, percentage: 10.0, avgLatencyMs: 650 },
+    { name: "Gemini 1.5 Flash", provider: "Gemini", count: 0, percentage: 0, avgLatencyMs: 350 },
+    { name: "Groq Llama 3 70B", provider: "Groq", count: 0, percentage: 0, avgLatencyMs: 180 },
+    { name: "RuleBased Fallback", provider: "Heuristic", count: 0, percentage: 0, avgLatencyMs: 5 },
   ];
 
+  const erSummary = stats?.entityResolution || entityLogSummary || {};
+  const totalDeduplicated = erSummary.totalProcessed ?? 0;
+
   const erBreakdown = [
-    { label: "Exact Match", count: 852, pct: 60.0, color: "#7ee787" },
-    { label: "Normalized", count: 355, pct: 25.0, color: "#6e9fe0" },
-    { label: "Fuzzy Review", count: 142, pct: 10.0, color: "#e8b339" },
-    { label: "Unresolved", count: 71, pct: 5.0, color: "#e5534b" },
+    {
+      label: "Exact Match",
+      count: erSummary.exactMatchCount ?? 0,
+      pct: erSummary.exactMatchPct ?? 0,
+      color: "#7ee787",
+    },
+    {
+      label: "Normalized",
+      count: erSummary.normalizedCount ?? 0,
+      pct: erSummary.normalizedPct ?? 0,
+      color: "#6e9fe0",
+    },
+    {
+      label: "Fuzzy Review",
+      count: erSummary.fuzzyCount ?? 0,
+      pct: erSummary.fuzzyPct ?? 0,
+      color: "#e8b339",
+    },
+    {
+      label: "Unresolved",
+      count: erSummary.unresolvedCount ?? 0,
+      pct: erSummary.unresolvedPct ?? 0,
+      color: "#e5534b",
+    },
   ];
 
   return (
@@ -79,7 +115,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ stats, onNavigateEnt
               </h2>
             </div>
             <span className="font-mono text-[10px] text-[#8b8f94]">
-              {stats?.llm?.totalCalls || 1580} Calls
+              {(stats?.llm?.totalCalls ?? 0).toLocaleString()} Calls
             </span>
           </div>
 
@@ -137,7 +173,9 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ stats, onNavigateEnt
                 ENTITY RESOLUTION & DEDUPLICATION BREAKDOWN
               </h2>
             </div>
-            <span className="font-mono text-[10px] text-[#8b8f94]">1,420 Deduplicated</span>
+            <span className="font-mono text-[10px] text-[#8b8f94]">
+              {totalDeduplicated.toLocaleString()} Deduplicated
+            </span>
           </div>
 
           {/* Horizontal Stacked Bar */}
@@ -183,3 +221,4 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ stats, onNavigateEnt
     </div>
   );
 };
+
