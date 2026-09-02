@@ -1,5 +1,7 @@
 # Graphone Pipeline 🚀
 
+[![CI](https://github.com/Sudhanshub27/graphone-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/Sudhanshub27/graphone-pipeline/actions/workflows/ci.yml)
+
 **Graphone Pipeline** is an asynchronous data ingestion and entity extraction system built in Python 3.11+. It features multi-source scraping (supporting static HTTP requests and client-rendered JavaScript via Playwright), resilient LLM-powered extraction with multi-provider fallback chains (Gemini, Groq, DeepSeek), entity deduplication, Google Sheets export, and a FastAPI-backed control dashboard.
 
 ---

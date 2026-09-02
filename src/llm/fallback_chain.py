@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import json
 import re
@@ -176,7 +177,9 @@ class FallbackChain:
                     provider=provider.name,
                     schema=schema_name,
                 )
-                result = await provider.extract(target_text, schema)
+                result = await asyncio.wait_for(
+                    provider.extract(target_text, schema), timeout=10.0
+                )
                 logger.info(
                     "Extraction succeeded",
                     provider=provider.name,

@@ -358,6 +358,44 @@ class FreshnessPipelineScraper(AsyncScraper):
         return {}
 
 
+async def run_news_freshness_pipeline(limit_per_source: int = 10) -> Dict[str, Any]:
+    """Execute complete 24-hour freshness scraping pipeline for News only."""
+    settings.setup_directories()
+    logger.info("Initiating News freshness scraping pipeline", limit_per_source=limit_per_source)
+    scraper = FreshnessPipelineScraper()
+    try:
+        news_records = await scraper.crawl_all_news(limit_per_source=limit_per_source)
+        news_file = settings.DATA_PROCESSED_DIR / "news.jsonl"
+        with open(news_file, "w", encoding="utf-8") as f:
+            for item in news_records:
+                f.write(item.model_dump_json() + "\n")
+        update_last_run_timestamp()
+        summary = {"news_written": len(news_records), "news_file": str(news_file)}
+        logger.info("News freshness pipeline completed successfully", **summary)
+        return summary
+    finally:
+        await scraper.close()
+
+
+async def run_jobs_freshness_pipeline(limit_per_source: int = 10) -> Dict[str, Any]:
+    """Execute complete 24-hour freshness scraping pipeline for Jobs only."""
+    settings.setup_directories()
+    logger.info("Initiating Jobs freshness scraping pipeline", limit_per_source=limit_per_source)
+    scraper = FreshnessPipelineScraper()
+    try:
+        job_records = await scraper.crawl_all_jobs(limit_per_source=limit_per_source)
+        jobs_file = settings.DATA_PROCESSED_DIR / "jobs.jsonl"
+        with open(jobs_file, "w", encoding="utf-8") as f:
+            for item in job_records:
+                f.write(item.model_dump_json() + "\n")
+        update_last_run_timestamp()
+        summary = {"jobs_written": len(job_records), "jobs_file": str(jobs_file)}
+        logger.info("Jobs freshness pipeline completed successfully", **summary)
+        return summary
+    finally:
+        await scraper.close()
+
+
 async def run_freshness_pipeline(limit_per_source: int = 10) -> Dict[str, int]:
     """Execute complete 24-hour freshness scraping pipeline for News and Jobs."""
     settings.setup_directories()

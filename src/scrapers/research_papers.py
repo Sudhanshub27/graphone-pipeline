@@ -239,7 +239,7 @@ class PapersWithCodeScraper(AsyncScraper):
         return await self.fetch_papers(limit=50)
 
 
-async def run_research_paper_pipeline(limit: int = 150) -> List[ResearchPaper]:
+async def run_research_paper_pipeline(limit: int = 150) -> Dict[str, Any]:
     """Orchestrate ArXiv and PapersWithCode paper fetching, export to JSONL."""
     settings.setup_directories()
 
@@ -250,7 +250,10 @@ async def run_research_paper_pipeline(limit: int = 150) -> List[ResearchPaper]:
 
     try:
         arxiv_papers = await arxiv_scraper.fetch_arxiv_papers(limit=limit)
-        pwc_papers = await pwc_scraper.fetch_papers(limit=30)
+        pwc_papers = await pwc_scraper.fetch_papers(limit=min(limit, 30))
+
+        arxiv_cnt = len(arxiv_papers) if isinstance(arxiv_papers, list) else 0
+        pwc_cnt = len(pwc_papers) if isinstance(pwc_papers, list) else 0
 
         all_papers: List[ResearchPaper] = []
         if isinstance(arxiv_papers, list):
@@ -261,20 +264,34 @@ async def run_research_paper_pipeline(limit: int = 150) -> List[ResearchPaper]:
         # Truncate to limit if needed
         all_papers = all_papers[:limit]
 
-        logger.info("Total research papers collected", total=len(all_papers))
+        # Calculate metrics
+        github_url_count = 0
+        stars_success_count = 0
+        for p in all_papers:
+            if p.abstract and ("github.com/" in p.abstract.lower() or "Open Source Code" in p.topics):
+                github_url_count += 1
+            if (p.citations_count or 0) > 0:
+                stars_success_count += 1
 
-        # Write to data/processed/research_papers.jsonl
         output_file = settings.DATA_PROCESSED_DIR / "research_papers.jsonl"
         with open(output_file, "w", encoding="utf-8") as f:
             for paper in all_papers:
                 f.write(paper.model_dump_json() + "\n")
 
+        summary = {
+            "records_written": len(all_papers),
+            "arxiv_count": arxiv_cnt,
+            "pwc_count": pwc_cnt,
+            "github_urls_found": github_url_count,
+            "stars_lookups_succeeded": stars_success_count,
+            "output_file": str(output_file),
+        }
+
         logger.info(
             "Successfully exported research papers to JSONL",
-            output_file=str(output_file),
-            records_written=len(all_papers),
+            **summary,
         )
-        return all_papers
+        return summary
 
     finally:
         await arxiv_scraper.close()
@@ -283,8 +300,7 @@ async def run_research_paper_pipeline(limit: int = 150) -> List[ResearchPaper]:
 
 async def run_research_papers_pipeline(target_limit: int = 150) -> Dict[str, Any]:
     """Orchestrator helper returning summary dict for main CLI runner."""
-    papers = await run_research_paper_pipeline(limit=target_limit)
-    return {"records_written": len(papers), "papers": papers}
+    return await run_research_paper_pipeline(limit=target_limit)
 
 
 def main():

@@ -24,11 +24,15 @@ Flags:
 
 import argparse
 import asyncio
+import os
 import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+# Ensure project root is in sys.path when running as `python src/main.py`
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import structlog
 from rich.console import Console
@@ -42,7 +46,11 @@ from src.resolution.entity_resolver import EntityResolver
 from src.schemas.base import SourceMetadata
 from src.schemas.product import Product
 from src.schemas.startup import Startup
-from src.scrapers.freshness import run_freshness_pipeline
+from src.scrapers.freshness import (
+    run_freshness_pipeline,
+    run_jobs_freshness_pipeline,
+    run_news_freshness_pipeline,
+)
 from src.scrapers.research_papers import run_research_papers_pipeline
 
 logger = structlog.get_logger(__name__)
@@ -241,6 +249,22 @@ class PipelineOrchestrator:
         self.metrics["targets"]["Research Papers"] = {"count": count, "status": "success"}
         return count
 
+    async def run_news_pipeline(self) -> int:
+        """Run News Freshness pipeline."""
+        logger.info("Executing News Freshness Pipeline", limit=self.limit)
+        summary = await run_news_freshness_pipeline(limit_per_source=self.limit)
+        news_cnt = summary.get("news_written", 0)
+        self.metrics["targets"]["News"] = {"count": news_cnt, "status": "success"}
+        return news_cnt
+
+    async def run_jobs_pipeline(self) -> int:
+        """Run Jobs Freshness pipeline."""
+        logger.info("Executing Jobs Freshness Pipeline", limit=self.limit)
+        summary = await run_jobs_freshness_pipeline(limit_per_source=self.limit)
+        jobs_cnt = summary.get("jobs_written", 0)
+        self.metrics["targets"]["Jobs"] = {"count": jobs_cnt, "status": "success"}
+        return jobs_cnt
+
     async def run_freshness_news_jobs_pipeline(self) -> Dict[str, int]:
         """Run News & Jobs Freshness pipeline."""
         logger.info("Executing News & Jobs Freshness Pipeline", limit=self.limit)
@@ -346,9 +370,9 @@ def main():
         elif target == "papers":
             asyncio.run(orchestrator.run_papers_pipeline())
         elif target == "news":
-            asyncio.run(orchestrator.run_freshness_news_jobs_pipeline())
+            asyncio.run(orchestrator.run_news_pipeline())
         elif target == "jobs":
-            asyncio.run(orchestrator.run_freshness_news_jobs_pipeline())
+            asyncio.run(orchestrator.run_jobs_pipeline())
         elif target == "all":
             asyncio.run(orchestrator.run_startups_pipeline())
             asyncio.run(orchestrator.run_products_pipeline())

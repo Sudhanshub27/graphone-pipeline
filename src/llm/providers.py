@@ -31,7 +31,10 @@ def clean_and_parse_json(text: str) -> Dict[str, Any]:
     if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
         cleaned = cleaned[start_idx : end_idx + 1]
 
-    return json.loads(cleaned)
+    data = json.loads(cleaned)
+    if isinstance(data, dict) and "collectedAt" in data and data["collectedAt"] is None:
+        del data["collectedAt"]
+    return data
 
 
 class LLMProvider(abc.ABC):
@@ -65,7 +68,7 @@ class GeminiProvider(LLMProvider):
     """Tier-1 LLM Provider: Google Gemini 2.5 Flash."""
 
     def __init__(self, api_key: Optional[str] = None):
-        super().__init__(name="Gemini-2.5-Flash", requests_per_minute=60)
+        super().__init__(name="Gemini-3.6-Flash", requests_per_minute=60)
         self.api_key = api_key or settings.GEMINI_API_KEY
 
     async def extract(self, text: str, schema: Type[BaseModel]) -> Dict[str, Any]:
@@ -98,7 +101,7 @@ class GroqProvider(LLMProvider):
     """Tier-2 LLM Provider: Groq."""
 
     def __init__(self, api_key: Optional[str] = None, model_name: str = "openai/gpt-oss-120b"):
-        super().__init__(name="Groq-Llama", requests_per_minute=60)
+        super().__init__(name="Groq-GPT-OSS-120B", requests_per_minute=60)
         self.api_key = api_key or settings.GROQ_API_KEY
         self.model_name = model_name
 
