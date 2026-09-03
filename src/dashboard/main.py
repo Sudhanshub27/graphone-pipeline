@@ -20,6 +20,7 @@ from src.dashboard.processed_reader import (
 )
 from src.observability.metrics import metrics_collector
 from src.resolution.graph_linker import graph_linker
+from src.vector.vector_store import vector_store
 
 configure_logging(settings.LOG_LEVEL)
 logger = structlog.get_logger(__name__)
@@ -181,6 +182,23 @@ async def get_knowledge_graph() -> Dict[str, Any]:
 async def export_cypher_graph() -> str:
     """Export Neo4j Cypher import script for Knowledge Graph visualization."""
     return graph_linker.generate_cypher_import_script()
+
+
+@app.get("/api/search")
+async def search_vector_store(
+    q: str = Query(..., description="Natural language semantic search query"),
+    type: Optional[str] = Query(default="all", description="Entity filter type: all, startup, product, research_paper, job, news"),
+    limit: int = Query(default=10, ge=1, le=50),
+) -> Dict[str, Any]:
+    """Perform hybrid vector semantic search across all ingested entities."""
+    matches = vector_store.search(query=q, record_type=type, limit=limit)
+    return {"query": q, "filterType": type, "count": len(matches), "results": matches}
+
+
+@app.post("/api/search/reindex")
+async def reindex_vector_store() -> Dict[str, Any]:
+    """Reindex all JSONL entity records into vector storage."""
+    return vector_store.index_all_records()
 
 
 @app.get("/api/logs")

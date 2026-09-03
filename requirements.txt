@@ -27,9 +27,10 @@ gspread-asyncio>=2.0.0
 google-auth>=2.27.0
 rich>=13.7.0
 
-# Dashboard & Backend API
+# Dashboard & Vector Database API
 fastapi>=0.110.0
 uvicorn>=0.28.0
+lancedb>=0.5.0
 
 # Testing & Dev Tools
 pytest>=8.1.0

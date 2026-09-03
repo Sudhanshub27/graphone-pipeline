@@ -8,6 +8,7 @@ import { EntityResolutionPage } from "./pages/EntityResolutionPage";
 import { PipelineLogsPage } from "./pages/PipelineLogsPage";
 
 import { KnowledgeGraphPage } from "./pages/KnowledgeGraphPage";
+import { VectorSearchPage } from "./pages/VectorSearchPage";
 
 export const App: React.FC = () => {
   const [currentRoute, setCurrentRoute] = useState<string>("overview");
@@ -97,6 +98,8 @@ export const App: React.FC = () => {
           {currentRoute === "resolution" && <EntityResolutionPage />}
 
           {currentRoute === "graph" && <KnowledgeGraphPage />}
+
+          {currentRoute === "vector" && <VectorSearchPage />}
 
           {currentRoute === "logs" && <PipelineLogsPage />}
         </main>
