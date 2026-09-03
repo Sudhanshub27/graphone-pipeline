@@ -23,8 +23,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       fetch("/api/config")
         .then((res) => res.json())
         .then((data) => {
-          if (data && typeof data.mockMode === "boolean") {
-            setMockMode(data.mockMode);
+          if (data) {
+            const val = data.mockMode ?? data.mock_mode;
+            if (typeof val === "boolean") setMockMode(val);
           }
         })
         .catch(() => {});

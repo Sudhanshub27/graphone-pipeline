@@ -31,8 +31,8 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ stats, onNavigateEnt
   ];
 
   const llmTiers = stats?.llm?.tiers || [
-    { name: "Gemini 1.5 Flash", provider: "Gemini", count: 0, percentage: 0, avgLatencyMs: 350 },
-    { name: "Groq Llama 3 70B", provider: "Groq", count: 0, percentage: 0, avgLatencyMs: 180 },
+    { name: "Gemini 3.6 Flash", provider: "Gemini", count: 0, percentage: 0, avgLatencyMs: 350 },
+    { name: "Groq GPT OSS 120B", provider: "Groq", count: 0, percentage: 0, avgLatencyMs: 180 },
     { name: "RuleBased Fallback", provider: "Heuristic", count: 0, percentage: 0, avgLatencyMs: 5 },
   ];
 

@@ -90,13 +90,6 @@ async def get_stats() -> Dict[str, Any]:
     stats_data = get_processed_stats()
     stats_data["mockMode"] = settings.MOCK_MODE
     stats_data["mock_mode"] = settings.MOCK_MODE
-    if stats_data.get("totalRecords", 0) == 0:
-        mock_stats = load_mock_json("stats.json")
-        if isinstance(mock_stats, dict):
-            stats_data = mock_stats
-            stats_data["llm"] = load_mock_json("llm_stats.json")
-            stats_data["mockMode"] = settings.MOCK_MODE
-            stats_data["mock_mode"] = settings.MOCK_MODE
 
     stats_data["status"] = pipeline_state["status"]
     if pipeline_state["status"] == "running":
@@ -134,9 +127,6 @@ async def get_records(
         records = records if isinstance(records, list) else []
     else:
         records = read_jsonl_records(jsonl_file)
-        if not records:
-            mock_res = load_mock_json(mock_file)
-            records = mock_res if isinstance(mock_res, list) else []
 
     if search:
         query = search.lower()
@@ -156,12 +146,7 @@ async def get_entity_log() -> Dict[str, Any]:
         mock_log = load_mock_json("entity_resolution_log.json")
         return mock_log if isinstance(mock_log, dict) else {"summary": {}, "entries": []}
 
-    res_log = get_processed_entity_log()
-    if res_log.get("entries"):
-        return res_log
-
-    mock_log = load_mock_json("entity_resolution_log.json")
-    return mock_log if isinstance(mock_log, dict) else {"summary": {}, "entries": []}
+    return get_processed_entity_log()
 
 
 @app.get("/api/logs")
@@ -169,6 +154,20 @@ async def get_logs(
     source: str = Query(default="scrape.log", description="Log file source: scrape.log, llm_extraction.log, entity_resolution.log")
 ) -> List[Dict[str, Any]]:
     """Tail recent pipeline log entries color-coded by log level."""
+    if source in ("llm_extraction.log", "llm_calls_log.jsonl"):
+        llm_records = read_jsonl_records("llm_calls_log.jsonl")
+        if llm_records:
+            formatted_logs = []
+            for r in llm_records[-50:]:
+                succ = r.get("success", True)
+                formatted_logs.append({
+                    "timestamp": r.get("timestamp"),
+                    "level": "INFO" if succ else "WARN",
+                    "module": "src.llm.fallback_chain",
+                    "message": f"[{r.get('provider')}] schema '{r.get('schema')}' {'succeeded' if succ else 'failed'} ({r.get('latency_ms')}ms, {r.get('token_count')} tokens)" + (f" - Error: {r.get('error')}" if r.get('error') else ""),
+                })
+            return formatted_logs
+
     logs_data = load_mock_json("logs.json")
     if isinstance(logs_data, dict):
         return logs_data.get(source, [])

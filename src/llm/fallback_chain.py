@@ -2,6 +2,7 @@ import asyncio
 import datetime
 import json
 import re
+import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Type
 import structlog
@@ -25,6 +26,33 @@ from src.llm.providers import (
 logger = structlog.get_logger(__name__)
 
 FAILED_EXTRACTIONS_DIR = settings.DATA_PROCESSED_DIR / "failed_extractions"
+LLM_CALLS_LOG_FILE = settings.DATA_PROCESSED_DIR / "llm_calls_log.jsonl"
+
+
+def log_llm_call(
+    provider: str,
+    schema: str,
+    success: bool,
+    latency_ms: float,
+    token_count: int,
+    error: Optional[str] = None,
+) -> None:
+    """Persist structured LLM call telemetry to data/processed/llm_calls_log.jsonl."""
+    try:
+        settings.DATA_PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+        payload = {
+            "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "provider": provider,
+            "schema": schema,
+            "success": success,
+            "latency_ms": latency_ms,
+            "token_count": token_count,
+            "error": error,
+        }
+        with open(LLM_CALLS_LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(payload) + "\n")
+    except Exception as e:
+        logger.error("Failed to log LLM call telemetry", error=str(e))
 
 
 def save_failed_extraction(text: str, schema_name: str, errors: List[str]) -> Path:
@@ -171,6 +199,7 @@ class FallbackChain:
 
         # Step 2: Try providers in tier sequence
         for provider in self.providers:
+            start_time = time.perf_counter()
             try:
                 logger.info(
                     "Attempting structured extraction tier",
@@ -180,14 +209,25 @@ class FallbackChain:
                 result = await asyncio.wait_for(
                     provider.extract(target_text, schema), timeout=10.0
                 )
+                latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
                 logger.info(
                     "Extraction succeeded",
                     provider=provider.name,
                     schema=schema_name,
+                    latency_ms=latency_ms,
+                )
+                log_llm_call(
+                    provider=provider.name,
+                    schema=schema_name,
+                    success=True,
+                    latency_ms=latency_ms,
+                    token_count=token_count,
+                    error=None,
                 )
                 return result, provider.name
 
             except (Exception, asyncio.CancelledError, asyncio.TimeoutError, BaseException) as e:
+                latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
                 # If keyboard interrupt (Ctrl+C), re-raise to allow user to exit
                 if isinstance(e, KeyboardInterrupt):
                     raise e
@@ -198,6 +238,15 @@ class FallbackChain:
                     provider=provider.name,
                     schema=schema_name,
                     error=str(e),
+                    latency_ms=latency_ms,
+                )
+                log_llm_call(
+                    provider=provider.name,
+                    schema=schema_name,
+                    success=False,
+                    latency_ms=latency_ms,
+                    token_count=token_count,
+                    error=error_msg,
                 )
                 errors.append(error_msg)
 
