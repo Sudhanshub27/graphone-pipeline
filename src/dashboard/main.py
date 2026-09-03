@@ -19,6 +19,7 @@ from src.dashboard.processed_reader import (
     read_jsonl_records,
 )
 from src.observability.metrics import metrics_collector
+from src.resolution.graph_linker import graph_linker
 
 configure_logging(settings.LOG_LEVEL)
 logger = structlog.get_logger(__name__)
@@ -172,7 +173,6 @@ async def get_entity_log() -> Dict[str, Any]:
 @app.get("/api/graph")
 async def get_knowledge_graph() -> Dict[str, Any]:
     """Fetch Knowledge Graph nodes and relational edges."""
-    from src.resolution.graph_linker import graph_linker
     nodes, edges = graph_linker.build_graph_triples()
     return {"nodes": nodes, "edges": edges, "summary": {"nodeCount": len(nodes), "edgeCount": len(edges)}}
 
@@ -180,7 +180,6 @@ async def get_knowledge_graph() -> Dict[str, Any]:
 @app.get("/api/graph/export", response_class=PlainTextResponse)
 async def export_cypher_graph() -> str:
     """Export Neo4j Cypher import script for Knowledge Graph visualization."""
-    from src.resolution.graph_linker import graph_linker
     return graph_linker.generate_cypher_import_script()
 
 

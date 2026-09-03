@@ -5,8 +5,9 @@ import re
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Type
-import structlog
+
 from pydantic import BaseModel
+import structlog
 
 from config.settings import settings
 from src.llm.chunking import (
