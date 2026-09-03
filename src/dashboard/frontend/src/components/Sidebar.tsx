@@ -47,11 +47,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="h-14 px-4 flex items-center border-b border-[#1f2124]">
         <div className="flex items-center gap-2.5">
           <div className="w-6 h-6 rounded bg-[#7ee787] flex items-center justify-center font-mono text-xs font-bold text-[#0a0b0d]">
-            G
+            T
           </div>
           <div>
             <h1 className="text-xs font-bold font-mono tracking-tight text-[#e6e6e6]">
-              GRAPHONE
+              TRIPWIRE
             </h1>
             <p className="text-[10px] font-mono text-[#8b8f94]">INGESTION PIPELINE</p>
           </div>

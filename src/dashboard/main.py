@@ -26,7 +26,7 @@ configure_logging(settings.LOG_LEVEL)
 logger = structlog.get_logger(__name__)
 
 app = FastAPI(
-    title="Graphone Pipeline Dashboard API",
+    title="Tripwire Pipeline Dashboard API",
     description="FastAPI Backend and Management Interface for Async Ingestion System",
     version="1.0.0",
 )

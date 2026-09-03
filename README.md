@@ -1,104 +1,184 @@
-# Graphone Pipeline 🚀
+# Tripwire Pipeline
 
 [![CI](https://github.com/Sudhanshub27/graphone-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/Sudhanshub27/graphone-pipeline/actions/workflows/ci.yml)
 
-**Graphone Pipeline** is an asynchronous data ingestion and entity extraction system built in Python 3.11+. It features multi-source scraping (supporting static HTTP requests and client-rendered JavaScript via Playwright), resilient LLM-powered extraction with multi-provider fallback chains (Gemini, Groq, DeepSeek), entity deduplication, Google Sheets export, and a FastAPI-backed control dashboard.
+Tripwire Pipeline is an enterprise-grade asynchronous data ingestion, LLM entity extraction, entity resolution, knowledge graph generation, and hybrid vector search framework built in Python 3.11+.
+
+It combines multi-source web scraping (supporting static HTTP requests via aiohttp and client-rendered JavaScript via Playwright), resilient LLM extraction fallback chains (Google Gemini, Groq, DeepSeek), fuzzy entity deduplication, automated Knowledge Graph relational triple generation with Cypher export, LanceDB vector embeddings, Prometheus observability metrics, and a React + FastAPI management dashboard.
 
 ---
 
-## 📁 Project Structure
+## Architecture Overview
 
 ```
-graphone-pipeline/
+                                  TRIPWIRE PIPELINE ARCHITECTURE
+
++---------------------------------------------------------------------------------------------------+
+|                                     Async Scraper Network Layer                                   |
+|                          (aiohttp / httpx / Playwright / TokenBucket Rate Limiter)                |
++-------------------------------------------------+-------------------------------------------------+
+                                                  |
+                                                  v
++-------------------------------------------------+-------------------------------------------------+
+|                                       Raw Cache Layer                                             |
+|                                         (data/raw/)                                               |
++-------------------------------------------------+-------------------------------------------------+
+                                                  |
+                                                  v
++-------------------------------------------------+-------------------------------------------------+
+|                                 Multi-Tier LLM Extraction Chain                                   |
+|                       (Gemini 2.5 -> Groq -> DeepSeek -> Dense Summarizer)                        |
++-------------------------------------------------+-------------------------------------------------+
+                                                  |
+                                                  v
++-------------------------------------------------+-------------------------------------------------+
+|                                Pydantic v2 Schema Validation                                      |
+|                  (Startup, Product, ResearchPaper, Job, News, BaseRecord)                         |
++-------------------------------------------------+-------------------------------------------------+
+                                                  |
+                                                  v
++-------------------------------------------------+-------------------------------------------------+
+|                                 Entity Resolution Engine                                          |
+|                (RapidFuzz token_sort_ratio + Legal Suffix Normalization)                          |
++-------------------------------------------------+-------------------------------------------------+
+                                                  |
+       +------------------------------------------+------------------------------------------+
+       |                                          |                                          |
+       v                                          v                                          v
++-----------------------------+    +-----------------------------+    +-----------------------------+
+|    Knowledge Graph Engine   |    |    LanceDB Vector Search    |    |    Prometheus Telemetry     |
+|   (Triples & Cypher Export) |    |  (128D Dense Embeddings)    |    |  (/metrics & LLM Telemetry) |
++--------------+--------------+    +--------------+--------------+    +--------------+--------------+
+               |                                  |                                  |
+               +----------------------------------+----------------------------------+
+                                                  |
+                                                  v
++-------------------------------------------------+-------------------------------------------------+
+|                             FastAPI Backend & React Control Center                                |
+|                        (Overview, Browser, Resolution, Graph, Vector, Logs)                       |
++---------------------------------------------------------------------------------------------------+
+```
+
+---
+
+## Core Technical Features
+
+### 1. Asynchronous Multi-Source Web Ingestion
+* **Hybrid Scraping**: Supports static HTML parsing (BeautifulSoup4 / Trafilatura) and headless browser automation (Playwright Chromium) for dynamic single-page applications.
+* **Concurrency & Rate Control**: TokenBucket rate limiters protect upstream endpoints, enforcing configurable domain-level request quotas and concurrency caps.
+
+### 2. Multi-Tier LLM Orchestration & Fallback Chain
+* **Tiered Failover Execution**: Routes extraction requests sequentially through primary and fallback provider tiers (Google Gemini -> Groq -> DeepSeek -> Rule-Based Extractor).
+* **Token Optimization & Chunking**: Dynamically estimates document token counts using `tiktoken`. Large documents exceeding safety thresholds are semantically chunked or processed via a dense summarization layer to prevent HTTP 413 or context-window overflow errors.
+* **Structured Output Validation**: Enforces strict Pydantic v2 schema compliance with automatic type coercion and error trapping.
+
+### 3. Entity Resolution & Deduplication
+* **Canonical Matching**: Combines fast-path exact alias matching with normalized legal suffix stripping (stripping "Inc.", "LLC", "PBC", "Corp").
+* **Fuzzy Normalization**: Employs RapidFuzz token-sort similarity scoring to detect duplicate records across disparate data sources before persisting to `data/processed/`.
+
+### 4. Knowledge Graph & Relational Topology Engine
+* **Relational Triple Extraction**: Automatically identifies topological relationships between entities (e.g., `Startup -[PRODUCES]-> Product`, `Job -[POSTED_BY]-> Startup`).
+* **Cypher Export Engine**: Generates ready-to-run Neo4j Cypher import scripts (`MERGE` statements) for seamless downstream graph database synchronization.
+
+### 5. LanceDB Hybrid Vector Search Engine
+* **128-Dimensional Embeddings**: Computes normalized dense text feature vectors for all processed entity records.
+* **Hybrid Similarity Ranking**: Combines vector cosine similarity scoring with keyword BM25 text match boosting.
+* **Command Palette Integration**: Search vector embeddings directly via the React Command Palette (`Cmd + K`) or through the dedicated Vector Search workbench interface.
+
+### 6. Prometheus Telemetry & System Observability
+* **Real-time Metrics**: Exposes operational counters and histograms at `/metrics` following standard Prometheus format (`scrapes_total`, `scrape_errors_total`, `llm_calls_total`, `llm_call_latency_seconds`).
+* **Execution Telemetry Logs**: Records structured LLM call execution details (model name, tier, input tokens, output tokens, latency, cost estimate) to `data/processed/llm_calls_log.jsonl`.
+
+### 7. React + FastAPI Control Center
+* **Single-Command Orchestration**: `./run.sh` script automates dependency checks, environment verification, React asset bundling, and FastAPI server execution.
+* **Real-Time Dashboards**: Includes overview statistics, interactive data browser, deduplication logs viewer, Knowledge Graph explorer, LanceDB vector search workbench, and live log tailing interface.
+
+---
+
+## Directory Structure
+
+```
+tripwire-pipeline/
 ├── src/
-│   ├── scrapers/       # Site-specific async scrapers (aiohttp, httpx, Playwright)
-│   ├── llm/            # LLM orchestration & fallback chain (Gemini -> Groq -> DeepSeek)
-│   ├── resolution/     # Entity resolution and deduplication algorithms
-│   ├── schemas/        # Pydantic v2 data models (Startup, Product, ResearchPaper, Job, News)
+│   ├── scrapers/       # Site-specific async scrapers (aiohttp, Playwright, rate limiters)
+│   ├── llm/            # Multi-provider fallback chain (Gemini, Groq, DeepSeek, chunking)
+│   ├── resolution/     # Entity resolution, normalization, and deduplication logic
+│   ├── schemas/        # Pydantic v2 data models (Startup, Product, Paper, Job, News)
+│   ├── vector/         # LanceDB vector embedding storage and hybrid search engine
+│   ├── observability/  # Prometheus MetricsCollector singleton and telemetry logger
 │   ├── export/         # Google Sheets export integrations
-│   └── dashboard/      # FastAPI backend and web control interface
-├── config/
-│   └── settings.py     # Centralized Pydantic-settings config (API keys, rate limits, concurrency)
+│   └── dashboard/      # FastAPI backend endpoints and React web management dashboard
+├── config/             # Centralized settings and logging configurations
 ├── data/
-│   ├── raw/            # Scraped HTML/JSON cache storage
-│   └── processed/      # Validated, structured entity output ready for export
-├── logs/               # Structured JSON logs output directory
+│   ├── raw/            # Scraped raw HTML and JSON payload cache
+│   └── processed/      # Validated entity JSONL logs and LanceDB vector index files
 ├── tests/              # Pytest unit and integration test suite
-├── .env.example        # Environment variable template
-├── architecture.pdf    # System architecture diagram (PDF format)
-├── requirements.txt    # Project Python dependencies
-└── README.md           # Project documentation
+├── .env.example        # Environment configuration template
+├── pyproject.toml      # Linter and project configuration file
+├── requirements.txt    # Python dependencies specification
+├── run.sh              # Master build and startup shell script
+└── README.md           # Technical documentation
 ```
 
 ---
 
-## 🛠️ Prerequisites & Installation
+## Installation & Setup
 
-### 1. Requirements
+### Prerequisites
 * **Python**: `3.11` or higher
-* **Virtual Environment**: Recommended (`venv` or `conda`)
+* **Node.js**: `18.0.0` or higher (for dashboard frontend compilation)
 
-### 2. Setup Virtual Environment
-```bash
-# Clone or navigate to project directory
-cd graphone-pipeline
+### Quick Start
 
-# Create virtual environment
-python3 -m venv venv
+1. **Clone Repository & Set Up Virtual Environment**:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
 
-# Activate virtual environment
-# On Linux/macOS:
-source venv/bin/activate
-# On Windows:
-# venv\Scripts\activate
-```
+2. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   playwright install chromium
+   ```
 
-### 3. Install Dependencies
-```bash
-# Upgrade pip
-pip install --upgrade pip
+3. **Configure Environment Variables**:
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` to configure your API keys (`GEMINI_API_KEY`, `GROQ_API_KEY`, `DEEPSEEK_API_KEY`).
 
-# Install project requirements
-pip install -r requirements.txt
-
-# Install Playwright browser engines (Chromium)
-playwright install chromium
-```
+4. **Launch Application Dashboard**:
+   ```bash
+   ./run.sh
+   ```
+   Access the dashboard at `http://localhost:8000`.
 
 ---
 
-## ⚙️ Configuration
+## Configuration Reference
 
-Copy `.env.example` to `.env` and fill in your API credentials:
-
-```bash
-cp .env.example .env
-```
-
-### Environment Variables Reference
-
-| Variable | Description | Default |
+| Environment Variable | Description | Default Value |
 | :--- | :--- | :--- |
-| `GEMINI_API_KEY` | Primary LLM Provider API Key (Google Gemini) | `None` |
-| `GROQ_API_KEY` | Secondary LLM Provider API Key (Groq) | `None` |
-| `DEEPSEEK_API_KEY` | Fallback LLM Provider API Key (DeepSeek) | `None` |
-| `GOOGLE_SHEETS_CREDS` | Path to Google Sheets service account credentials JSON | `None` |
+| `MOCK_MODE` | Enable synthetic log generation mode | `false` |
+| `GEMINI_API_KEY` | Primary LLM Provider API key | `None` |
+| `GROQ_API_KEY` | Secondary LLM Provider API key | `None` |
+| `DEEPSEEK_API_KEY` | Fallback LLM Provider API key | `None` |
 | `MAX_CONCURRENT_SCRAPES` | Maximum parallel scraper worker tasks | `5` |
-| `MAX_CONCURRENT_LLM_CALLS` | Maximum parallel LLM extraction API calls | `3` |
-| `RATE_LIMIT_PER_MINUTE` | Global HTTP rate limit per minute | `60` |
+| `MAX_CONCURRENT_LLM_CALLS` | Maximum parallel LLM API execution tasks | `3` |
+| `RATE_LIMIT_PER_MINUTE` | Global domain rate limit per minute | `60` |
 | `HTTP_TIMEOUT_SECONDS` | HTTP request timeout limit (seconds) | `30` |
 | `LOG_LEVEL` | Global logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`) | `INFO` |
 
 ---
 
-## 📊 Data Schemas (Pydantic v2)
+## Data Schemas
 
-All schemas inherit from `BaseRecord` which standardizes data provenance across all ingested records:
+All record schemas inherit from `BaseRecord` to enforce uniform data provenance tracking:
 
-* **Provenance Fields**: `schemaVersion`, `recordType`, `source` (`name`, `url`), `collectedAt`
+* **Provenance Metadata**: `schemaVersion`, `recordType`, `source` (`name`, `url`), `collectedAt`
 
-### Supported Entity Schemas:
-
+### Supported Schemas:
 1. **`Startup`**: Company name, description, website, founding year, founders, funding stage, total funding, location, categories/tags, employee count.
 2. **`Product`**: Product name, tagline, description, URL, maker company, launch date, categories/tags, pricing model, upvotes count.
 3. **`ResearchPaper`**: Paper title, authors, abstract, published date, PDF URL, journal/conference, DOI, topics, citations count.
@@ -107,65 +187,39 @@ All schemas inherit from `BaseRecord` which standardizes data provenance across 
 
 ---
 
-## 🚦 System Architecture & Components
+## API Endpoints Reference
 
-```
-                +-------------------------+
-                | Scraper Network Layer   |
-                | (aiohttp/httpx/Playwright)|
-                +------------+------------+
-                             |
-                             v
-                +-------------------------+
-                |  Raw HTML / JSON Cache  |
-                |     (data/raw/)         |
-                +------------+------------+
-                             |
-                             v
-                +-------------------------+
-                |    LLM Orchestrator     |
-                | Gemini->Groq->DeepSeek  |
-                +------------+------------+
-                             |
-                             v
-                +-------------------------+
-                |    Pydantic v2 Schema   |
-                |     Validation          |
-                +------------+------------+
-                             |
-                             v
-                +-------------------------+
-                |   Entity Resolution     |
-                |    & Deduplication      |
-                +------------+------------+
-                             |
-            +----------------+----------------+
-            |                                 |
-            v                                 v
-+-----------------------+         +-----------------------+
-|  Google Sheets Export |         |   FastAPI Dashboard   |
-|   (src/export/)       |         |   (src/dashboard/)    |
-+-----------------------+         +-----------------------+
-```
+### Dashboard & Analytics API
+* `GET /api/stats`: Fetch real-time system metrics, total records processed, and LLM orchestration breakdown.
+* `GET /api/config`: Return active server configuration state (`mockMode`, `logLevel`).
+* `POST /api/run`: Trigger manual asynchronous pipeline execution run.
+
+### Data & Resolution API
+* `GET /api/records/{category}`: Retrieve processed JSONL records for specified category (`startup`, `product`, `research_paper`, `job`, `news`).
+* `GET /api/entity-log`: Fetch entity deduplication resolution log entries.
+
+### Knowledge Graph & Vector Search API
+* `GET /api/graph`: Fetch graph node topologies and relational edge triples.
+* `GET /api/graph/export`: Export formatted Neo4j Cypher import script.
+* `GET /api/search?q={query}&type={type}`: Execute hybrid vector semantic search across LanceDB index.
+* `POST /api/search/reindex`: Bulk re-index processed entity records into LanceDB.
+
+### Observability & Logging API
+* `GET /metrics`: Prometheus operational metrics endpoint.
+* `GET /api/logs?source={file}`: Fetch live log file entries (`scrape.log`, `llm_extraction.log`, `entity_resolution.log`, `llm_calls_log.jsonl`).
 
 ---
 
-## 🧪 Running Tests
+## Testing
 
-Run unit tests for data schemas and configuration management using `pytest`:
+Execute the test suite using `pytest`:
 
 ```bash
 pytest tests/ -v
 ```
 
----
-
-## 🖥️ Running the Dashboard API
-
-Launch the FastAPI backend server:
+To run test coverage analysis:
 
 ```bash
-uvicorn src.dashboard.main:app --reload --port 8000
+pytest tests/ --cov=src --cov-report=term-missing
 ```
-
-Access the interactive API documentation at `http://127.0.0.1:8000/docs`.
