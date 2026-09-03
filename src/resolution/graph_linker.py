@@ -10,8 +10,8 @@ for Neo4j / NetworkX graph visualization.
 """
 
 import json
-from pathlib import Path
 from typing import Any, Dict, List, Tuple
+
 import structlog
 
 from config.settings import settings

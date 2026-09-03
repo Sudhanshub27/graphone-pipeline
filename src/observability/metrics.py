@@ -9,8 +9,8 @@ entity resolution merger counts, and a Prometheus-formatted /metrics endpoint ou
 """
 
 import time
-from typing import Dict, Any, List
-from pydantic import BaseModel
+from typing import Any, Dict, List
+
 import structlog
 
 logger = structlog.get_logger(__name__)

@@ -1,4 +1,5 @@
 """Configuration package for graphone-pipeline."""
-from config.settings import settings, configure_logging
+from config.settings import configure_logging, settings
 
-__all__ = ["settings", "configure_logging"]
+__all__ = ["configure_logging", "settings"]
+
