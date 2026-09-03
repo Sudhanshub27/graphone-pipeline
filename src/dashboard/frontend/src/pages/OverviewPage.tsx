@@ -1,7 +1,8 @@
 import React from "react";
 import { AnimatedCounter } from "../components/AnimatedCounter";
 import { Sparkline } from "../components/Sparkline";
-import { Rocket, Package, FileText, Briefcase, Newspaper, Cpu, GitMerge, BarChart3 } from "lucide-react";
+import { BenchmarkJsonModal } from "../components/BenchmarkJsonModal";
+import { Rocket, Package, FileText, Briefcase, Newspaper, Cpu, GitMerge, BarChart3, FileCode } from "lucide-react";
 
 interface OverviewPageProps {
   stats: any;
@@ -11,6 +12,7 @@ interface OverviewPageProps {
 export const OverviewPage: React.FC<OverviewPageProps> = ({ stats, onNavigateEntity }) => {
   const [entityLogSummary, setEntityLogSummary] = React.useState<any>(null);
   const [benchmarkData, setBenchmarkData] = React.useState<any>(null);
+  const [isBenchmarkModalOpen, setIsBenchmarkModalOpen] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     fetch("/api/entity-log")
@@ -22,9 +24,11 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ stats, onNavigateEnt
       })
       .catch((err) => console.error("Failed to load entity log summary", err));
 
-    fetch("/api/benchmark")
-      .then((res) => res.json())
-      .then((data) => setBenchmarkData(data))
+    fetch("/api/benchmark/latest")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data) setBenchmarkData(data);
+      })
       .catch((err) => console.error("Failed to load benchmark data", err));
   }, []);
 
@@ -126,9 +130,18 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ stats, onNavigateEnt
               TRIPWIRE SCIENTIFIC EVALUATION BENCHMARK METRICS
             </h2>
           </div>
-          <span className="font-mono text-[10px] text-[#7ee787] bg-[#7ee787]/10 px-2 py-0.5 rounded border border-[#7ee787]/20">
-            Git: {benchmarkData?.metadata?.git_commit || "main-latest"}
-          </span>
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => setIsBenchmarkModalOpen(true)}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-mono font-medium text-[#7ee787] bg-[#7ee787]/10 hover:bg-[#7ee787]/20 border border-[#7ee787]/30 transition-all cursor-pointer select-none"
+            >
+              <FileCode className="w-3.5 h-3.5" />
+              <span>Benchmark JSON</span>
+            </button>
+            <span className="font-mono text-[10px] text-[#7ee787] bg-[#7ee787]/10 px-2 py-0.5 rounded border border-[#7ee787]/20">
+              Git: {benchmarkData?.run?.git_commit || benchmarkData?.metadata?.git_commit || "main-latest"}
+            </span>
+          </div>
         </div>
 
         <div className="grid grid-cols-5 gap-3 pt-1 font-mono text-xs">
@@ -315,6 +328,11 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ stats, onNavigateEnt
           </div>
         </div>
       </div>
+
+      <BenchmarkJsonModal
+        open={isBenchmarkModalOpen}
+        onClose={() => setIsBenchmarkModalOpen(false)}
+      />
     </div>
   );
 };

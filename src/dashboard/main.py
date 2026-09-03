@@ -1,28 +1,21 @@
-import asyncio
 import json
-import os
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import structlog
-from fastapi import BackgroundTasks, FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, PlainTextResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from config.settings import configure_logging, settings
 from src.dashboard.processed_reader import (
-    get_all_processed_records,
     get_live_benchmark_metrics,
     get_processed_entity_log,
     get_processed_stats,
     read_jsonl_records,
 )
-from src.observability.metrics import metrics_collector
-from src.resolution.graph_linker import graph_linker
-from src.vector.vector_store import vector_store
 
 configure_logging(settings.LOG_LEVEL)
 logger = structlog.get_logger(__name__)
@@ -224,16 +217,46 @@ async def get_entity_log() -> Dict[str, Any]:
     return get_processed_entity_log()
 
 
+def get_latest_actual_benchmark_report() -> Optional[Dict[str, Any]]:
+    """Locate and return the contents of the latest actual benchmark JSON report in evaluation/reports/."""
+    reports_dir = settings.BASE_DIR / "evaluation" / "reports"
+    if not reports_dir.exists():
+        return None
+
+    json_files = [
+        f for f in reports_dir.glob("*.json")
+        if f.is_file() and f.stat().st_size > 0 and not f.name.startswith(".")
+    ]
+    if not json_files:
+        return None
+
+    latest_file = max(json_files, key=lambda p: p.stat().st_mtime)
+    try:
+        with open(latest_file, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        logger.warning("Failed reading latest benchmark report file", file=str(latest_file), error=str(e))
+        return None
+
+
+@app.get("/api/benchmark/latest")
+async def get_latest_benchmark_report_endpoint() -> Dict[str, Any]:
+    """Fetch the latest actual Phase 1 benchmark JSON report."""
+    report = get_latest_actual_benchmark_report()
+    if not report:
+        raise HTTPException(
+            status_code=404,
+            detail="No benchmark report available. Run the evaluation benchmark to generate a report.",
+        )
+    return report
+
+
 @app.get("/api/benchmark")
 async def get_benchmark_report() -> Dict[str, Any]:
     """Fetch reproducible scientific benchmark performance metrics."""
-    report_file = settings.BASE_DIR / "evaluation" / "reports" / "benchmark_report.json"
-    if report_file.exists():
-        try:
-            with open(report_file, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception as e:
-            logger.warning("Failed reading benchmark report", error=str(e))
+    report = get_latest_actual_benchmark_report()
+    if report:
+        return report
 
     # Dynamically aggregate metrics from live data/processed/*.jsonl log files
     return get_live_benchmark_metrics()
