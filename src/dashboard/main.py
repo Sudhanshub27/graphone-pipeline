@@ -65,6 +65,10 @@ def load_mock_json(filename: str) -> Any:
 @app.on_event("startup")
 async def startup_event():
     settings.setup_directories()
+    try:
+        import copy_assets
+    except Exception as e:
+        logger.warning("Failed executing asset copy", error=str(e))
     logger.info("Graphone Pipeline Dashboard backend started", mock_mode=settings.MOCK_MODE)
 
 
@@ -72,6 +76,31 @@ async def startup_event():
 async def get_config() -> Dict[str, Any]:
     """Get runtime pipeline settings and mock_mode status."""
     return {"mockMode": settings.MOCK_MODE, "mock_mode": settings.MOCK_MODE}
+
+
+@app.get("/logo.png")
+async def get_logo_image():
+    """Serve brand logo image asset."""
+    logo_path = settings.BASE_DIR / "logo.png"
+    if logo_path.exists():
+        return FileResponse(logo_path, media_type="image/png")
+    frontend_logo = settings.BASE_DIR / "src" / "dashboard" / "frontend" / "public" / "logo.png"
+    if frontend_logo.exists():
+        return FileResponse(frontend_logo, media_type="image/png")
+    raise HTTPException(status_code=404, detail="Logo file not found")
+
+
+@app.get("/favicon.png")
+@app.get("/favicon.ico")
+async def get_favicon_image():
+    """Serve site favicon image asset."""
+    fav_path = settings.BASE_DIR / "favicon.png"
+    if fav_path.exists():
+        return FileResponse(fav_path, media_type="image/png")
+    frontend_fav = settings.BASE_DIR / "src" / "dashboard" / "frontend" / "public" / "favicon.png"
+    if frontend_fav.exists():
+        return FileResponse(frontend_fav, media_type="image/png")
+    raise HTTPException(status_code=404, detail="Favicon file not found")
 
 
 @app.get("/metrics", response_class=PlainTextResponse)
