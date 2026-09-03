@@ -14,6 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from config.settings import configure_logging, settings
 from src.dashboard.processed_reader import (
     get_all_processed_records,
+    get_live_benchmark_metrics,
     get_processed_entity_log,
     get_processed_stats,
     read_jsonl_records,
@@ -169,6 +170,21 @@ async def get_entity_log() -> Dict[str, Any]:
         return mock_log if isinstance(mock_log, dict) else {"summary": {}, "entries": []}
 
     return get_processed_entity_log()
+
+
+@app.get("/api/benchmark")
+async def get_benchmark_report() -> Dict[str, Any]:
+    """Fetch reproducible scientific benchmark performance metrics."""
+    report_file = settings.BASE_DIR / "evaluation" / "reports" / "benchmark_report.json"
+    if report_file.exists():
+        try:
+            with open(report_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            logger.warning("Failed reading benchmark report", error=str(e))
+
+    # Dynamically aggregate metrics from live data/processed/*.jsonl log files
+    return get_live_benchmark_metrics()
 
 
 @app.get("/api/graph")

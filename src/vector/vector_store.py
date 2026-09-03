@@ -15,7 +15,6 @@ from typing import Any, Dict, List, Optional, Tuple
 import structlog
 
 from config.settings import settings
-from src.dashboard.processed_reader import get_all_processed_records
 
 logger = structlog.get_logger(__name__)
 
@@ -66,6 +65,8 @@ class VectorStoreManager:
 
     def index_all_records(self) -> Dict[str, Any]:
         """Index all processed JSONL entity records into vector storage."""
+        from src.dashboard.processed_reader import get_all_processed_records
+
         all_data = get_all_processed_records()
         indexed_items: List[Dict[str, Any]] = []
 

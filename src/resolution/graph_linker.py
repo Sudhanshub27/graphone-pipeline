@@ -15,7 +15,6 @@ from typing import Any, Dict, List, Tuple
 import structlog
 
 from config.settings import settings
-from src.dashboard.processed_reader import get_all_processed_records
 
 logger = structlog.get_logger(__name__)
 
@@ -29,6 +28,9 @@ class KnowledgeGraphLinker:
 
     def build_graph_triples(self) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
         """Build graph nodes and relational edges across all ingested entities."""
+        from src.dashboard.processed_reader import get_all_processed_records
+        from src.resolution.entity_resolver import normalize_entity_name
+
         all_records = get_all_processed_records()
         nodes: List[Dict[str, Any]] = []
         edges: List[Dict[str, Any]] = []
@@ -67,10 +69,17 @@ class KnowledgeGraphLinker:
             maker = product.get("maker_company")
             if maker:
                 matching_startup_id = None
+                norm_maker = normalize_entity_name(maker)
                 for node in nodes:
-                    if node["label"] == "Startup" and maker.lower() in node["name"].lower():
-                        matching_startup_id = node["id"]
-                        break
+                    if node["label"] == "Startup":
+                        norm_node_name = normalize_entity_name(node["name"])
+                        if (
+                            (norm_maker and norm_node_name and (norm_maker in norm_node_name or norm_node_name in norm_maker))
+                            or maker.lower() in node["name"].lower()
+                            or node["name"].lower() in maker.lower()
+                        ):
+                            matching_startup_id = node["id"]
+                            break
                 if matching_startup_id:
                     edges.append({
                         "source": matching_startup_id,

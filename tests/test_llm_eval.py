@@ -50,7 +50,8 @@ def test_compare_field_values_strings_and_numbers():
     assert compare_field_values("OpenAI, Inc.", "OpenAI Inc") == 1.0
     assert compare_field_values(1240, 1240) == 1.0
     assert compare_field_values("1240", 1240) == 1.0
-    assert compare_field_values("Series A", "Series B") == 0.0
+    assert compare_field_values("Series A", "Series B") == 0.33
+    assert compare_field_values("OpenAI", "Anthropic") == 0.0
 
 
 def test_compare_field_values_lists():

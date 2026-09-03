@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 
 # ==============================================================================
-# GRAPHONE PIPELINE: MASTER EXECUTION SCRIPT
+# TRIPWIRE PIPELINE: MASTER EXECUTION SCRIPT
 # ==============================================================================
-# Executes virtual environment setup, automated unit tests, multi-target data
-# ingestion, LLM extraction, entity resolution, and Google Sheets/CSV export.
+# Executes virtual environment setup, automated unit/integration tests, multi-target data
+# ingestion, LLM extraction, entity resolution, vector store indexing, and dashboard Web UI.
 #
 # Usage:
 #   ./run.sh              # Run full end-to-end pipeline
 #   ./run.sh --dry-run    # Fast dry-run on sample records
 #   ./run.sh --limit 50   # Run with custom record limits
+#   ./run.sh --eval       # Run pipeline evaluation benchmark in mock mode
 # ==============================================================================
 
 set -e
@@ -19,7 +20,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 echo "======================================================================"
-echo "🚀 GRAPHONE DATA PIPELINE: INITIALIZING MASTER RUN"
+echo "🚀 TRIPWIRE DATA PIPELINE: INITIALIZING MASTER RUN"
 echo "======================================================================"
 
 # 1. Check & Activate Virtual Environment
@@ -41,9 +42,22 @@ fi
 # 2. Run Test Suite
 echo ""
 echo "======================================================================"
-echo "🧪 STAGE 1: RUNNING AUTOMATED UNIT TEST SUITE"
+echo "🧪 STAGE 1: RUNNING AUTOMATED UNIT & INTEGRATION TEST SUITE"
 echo "======================================================================"
 pytest tests/ -v
+
+# Check for --eval flag
+if [[ "$*" == *"--eval"* ]]; then
+    echo ""
+    echo "======================================================================"
+    echo "📈 EXECUTING SCIENTIFIC PIPELINE EVALUATION BENCHMARK"
+    echo "======================================================================"
+    python3 -m evaluation.benchmark --mode mock --records 20 --iterations 3 --warmup-records 2 --output evaluation/reports/benchmark_report.json
+    python3 -m evaluation.llm.evaluator --provider chain --output evaluation/reports/llm_chain_eval.json
+    python3 -m evaluation.resolution.evaluator --threshold 85.0 --output evaluation/reports/resolution_eval.json
+    echo "✅ Scientific benchmark execution complete. Reports saved to evaluation/reports/"
+    exit 0
+fi
 
 # Default to --dry-run if no CLI flags are passed for fast launch
 RUN_ARGS="$@"
@@ -79,6 +93,14 @@ echo ""
 echo "======================================================================"
 echo "🌐 STAGE 5: LAUNCHING REACT + FASTAPI DASHBOARD WEB UI"
 echo "======================================================================"
+
+# Automatically clear port 8000 if previously occupied
+if fuser 8000/tcp >/dev/null 2>&1; then
+    echo "▶ Port 8000 occupied. Clearing existing process..."
+    fuser -k 8000/tcp || true
+    sleep 1
+fi
+
 echo "▶ Dashboard server running at: http://localhost:8000"
 echo "▶ Press Ctrl+C to stop the dashboard server."
 

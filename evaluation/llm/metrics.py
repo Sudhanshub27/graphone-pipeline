@@ -47,9 +47,12 @@ def normalize_date(val: Any) -> str:
     if not val:
         return ""
     s_val = str(val).strip()
-    match = re.search(r"\b(\d{4}(?:-\d{2}-\d{2})?)\b", s_val)
-    if match:
-        return match.group(1)
+    full_date = re.search(r"(\d{4}-\d{2}-\d{2})", s_val)
+    if full_date:
+        return full_date.group(1)
+    year_match = re.search(r"\b(\d{4})\b", s_val)
+    if year_match:
+        return year_match.group(1)
     return s_val.lower()
 
 

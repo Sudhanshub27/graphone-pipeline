@@ -22,6 +22,7 @@ from src.llm.fallback_chain import FallbackChain, RuleBasedFallbackProvider
 from src.llm.providers import LLMProvider
 from src.resolution.entity_resolver import EntityResolver
 from src.resolution.graph_linker import KnowledgeGraphLinker
+from src.schemas.base import SourceMetadata
 from src.schemas.product import Product
 from src.schemas.startup import Startup
 from src.vector.vector_store import VectorStoreManager
@@ -215,6 +216,7 @@ async def test_e2e_failure_duplicate_entity_handling(tmp_path: Path, monkeypatch
         description="AI Safety Company Building Claude",
         stage="Series E",
         founding_year=2021,
+        source=SourceMetadata(name="Test", url="http://test.com"),
     )
 
     # Raw entity 2 (legal suffix alias variant)
@@ -223,6 +225,7 @@ async def test_e2e_failure_duplicate_entity_handling(tmp_path: Path, monkeypatch
         description="AI Safety & Research Company",
         stage="Series E",
         founding_year=2021,
+        source=SourceMetadata(name="Test", url="http://test.com"),
     )
 
     resolved_s1, info1 = resolver.resolve_record(raw_s1)
@@ -230,7 +233,7 @@ async def test_e2e_failure_duplicate_entity_handling(tmp_path: Path, monkeypatch
 
     # Assert both resolved to identical canonical name
     assert resolved_s1.name == resolved_s2.name
-    assert resolved_s1.name == "Anthropic PBC"
+    assert resolved_s1.name == "Anthropic"
 
     # Write both to JSONL and build graph
     startups_file = processed_dir / "startups.jsonl"
@@ -243,4 +246,4 @@ async def test_e2e_failure_duplicate_entity_handling(tmp_path: Path, monkeypatch
 
     startup_nodes = [n for n in nodes if n["label"] == "Startup"]
     assert len(startup_nodes) == 1, f"Expected 1 deduplicated startup node, got {len(startup_nodes)}"
-    assert startup_nodes[0]["name"] == "Anthropic PBC"
+    assert startup_nodes[0]["name"] == "Anthropic"

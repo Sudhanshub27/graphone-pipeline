@@ -102,15 +102,17 @@ class RuleBasedFallbackProvider(LLMProvider):
         }
 
         # Extract title/name dynamically from <h1> or title headers
-        h1_match = re.search(r"<h1>([^<]+)</h1>", text, re.I)
+        h1_match = re.search(r"<h1[^>]*>([^<]+)</h1>", text, re.I)
         name_match = re.search(r"(?:name|title|heading)[:=]?\s*[\"']?([^\"'<\n\r]+)", text, re.I)
-        
+
         if h1_match:
             title_val = h1_match.group(1).strip()
         elif name_match:
             title_val = name_match.group(1).strip()
         else:
             title_val = "Extracted Entity"
+
+        title_val = title_val.lstrip(">").strip()
 
         extracted["name"] = title_val
         extracted["title"] = title_val
