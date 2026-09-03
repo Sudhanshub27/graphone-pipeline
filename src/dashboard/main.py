@@ -7,15 +7,20 @@ from typing import Any, Dict, List, Optional
 import structlog
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, PlainTextResponse
+from fastapi.staticfiles import StaticFiles
 
 from config.settings import configure_logging, settings
 from src.dashboard.processed_reader import (
+    get_all_processed_records,
     get_live_benchmark_metrics,
     get_processed_entity_log,
     get_processed_stats,
     read_jsonl_records,
 )
+from src.observability.metrics import metrics_collector
+from src.resolution.graph_linker import graph_linker
+from src.vector.vector_store import vector_store
 
 configure_logging(settings.LOG_LEVEL)
 logger = structlog.get_logger(__name__)
