@@ -1,0 +1,177 @@
+[
+  {
+    "id": "er-01",
+    "entity_a": "OpenAI",
+    "entity_b": "OpenAI",
+    "expected_match": true,
+    "case_category": "exact_duplicates"
+  },
+  {
+    "id": "er-02",
+    "entity_a": "Anthropic",
+    "entity_b": "Anthropic",
+    "expected_match": true,
+    "case_category": "exact_duplicates"
+  },
+  {
+    "id": "er-03",
+    "entity_a": "openai inc",
+    "entity_b": "OPENAI INC",
+    "expected_match": true,
+    "case_category": "capitalization"
+  },
+  {
+    "id": "er-04",
+    "entity_a": "groq inc",
+    "entity_b": "Groq Inc",
+    "expected_match": true,
+    "case_category": "capitalization"
+  },
+  {
+    "id": "er-05",
+    "entity_a": "Anthropic  PBC ",
+    "entity_b": "Anthropic PBC",
+    "expected_match": true,
+    "case_category": "whitespace"
+  },
+  {
+    "id": "er-06",
+    "entity_a": " DeepSeek  AI ",
+    "entity_b": "DeepSeek AI",
+    "expected_match": true,
+    "case_category": "whitespace"
+  },
+  {
+    "id": "er-07",
+    "entity_a": "DeepSeek-AI",
+    "entity_b": "DeepSeek AI",
+    "expected_match": true,
+    "case_category": "punctuation"
+  },
+  {
+    "id": "er-08",
+    "entity_a": "SynthFlow.ai",
+    "entity_b": "SynthFlow ai",
+    "expected_match": true,
+    "case_category": "punctuation"
+  },
+  {
+    "id": "er-09",
+    "entity_a": "Graphone Corp",
+    "entity_b": "Graphone LLC",
+    "expected_match": true,
+    "case_category": "legal_suffixes"
+  },
+  {
+    "id": "er-10",
+    "entity_a": "Mistral AI SAS",
+    "entity_b": "Mistral AI Ltd",
+    "expected_match": true,
+    "case_category": "legal_suffixes"
+  },
+  {
+    "id": "er-11",
+    "entity_a": "International Business Machines",
+    "entity_b": "IBM",
+    "expected_match": true,
+    "case_category": "abbreviations"
+  },
+  {
+    "id": "er-12",
+    "entity_a": "Amazon Web Services",
+    "entity_b": "AWS",
+    "expected_match": true,
+    "case_category": "abbreviations"
+  },
+  {
+    "id": "er-13",
+    "entity_a": "Labs Synthesia",
+    "entity_b": "Synthesia Labs",
+    "expected_match": true,
+    "case_category": "token_reordering"
+  },
+  {
+    "id": "er-14",
+    "entity_a": "AI Research OpenAI",
+    "entity_b": "OpenAI AI Research",
+    "expected_match": true,
+    "case_category": "token_reordering"
+  },
+  {
+    "id": "er-15",
+    "entity_a": "OpenAI",
+    "entity_b": "Microsoft",
+    "expected_match": false,
+    "case_category": "obvious_non_matches"
+  },
+  {
+    "id": "er-16",
+    "entity_a": "Anthropic",
+    "entity_b": "Google DeepMind",
+    "expected_match": false,
+    "case_category": "obvious_non_matches"
+  },
+  {
+    "id": "er-17",
+    "entity_a": "Stripe",
+    "entity_b": "Stripe Press",
+    "expected_match": false,
+    "case_category": "ambiguous_similar_names"
+  },
+  {
+    "id": "er-18",
+    "entity_a": "Scale AI",
+    "entity_b": "Scale Studio",
+    "expected_match": false,
+    "case_category": "ambiguous_similar_names"
+  },
+  {
+    "id": "er-19",
+    "entity_a": "Cohere",
+    "entity_b": "Cohere Health",
+    "expected_match": false,
+    "case_category": "ambiguous_similar_names"
+  },
+  {
+    "id": "er-20",
+    "entity_a": "ElevenLabs Inc",
+    "entity_b": "ElevenLabs Corporation",
+    "expected_match": true,
+    "case_category": "legal_suffixes"
+  },
+  {
+    "id": "er-21",
+    "entity_a": "Pinecone Systems",
+    "entity_b": "Pinecone Inc",
+    "expected_match": true,
+    "case_category": "legal_suffixes"
+  },
+  {
+    "id": "er-22",
+    "entity_a": "Weaviate B.V.",
+    "entity_b": "Weaviate",
+    "expected_match": true,
+    "case_category": "legal_suffixes"
+  },
+  {
+    "id": "er-23",
+    "entity_a": "LangChain Inc",
+    "entity_b": "LlamaIndex Inc",
+    "expected_match": false,
+    "case_category": "obvious_non_matches"
+  },
+  {
+    "id": "er-24",
+    "entity_a": "Databricks",
+    "entity_b": "Snowflake",
+    "expected_match": false,
+    "case_category": "obvious_non_matches"
+  },
+  {
+    "id": "er-25",
+    "entity_a": "Anyscale Inc",
+    "entity_b": "AnyScale",
+    "expected_match": true,
+    "case_category": "capitalization"
+  }
+]

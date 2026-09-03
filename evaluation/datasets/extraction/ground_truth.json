@@ -1,0 +1,95 @@
+[
+  {
+    "id": "gt-startup-01",
+    "target_schema": "Startup",
+    "source_text": "<div class=\"company-card\"><h1>OpenAI, Inc.</h1><p class=\"tagline\">Frontier Artificial Intelligence & Research Company</p><span class=\"funding\">Total Funding: $13B</span><span class=\"stage\">Stage: Series F</span><span class=\"location\">Location: San Francisco, CA</span><span class=\"year\">Founded: 2015</span><span class=\"team\">Employees: 1000+</span><div class=\"categories\"><span>AI Research</span><span>LLM</span></div></div>",
+    "expected_fields": {
+      "name": "OpenAI, Inc.",
+      "description": "Frontier Artificial Intelligence & Research Company",
+      "total_funding": "$13B",
+      "stage": "Series F",
+      "location": "San Francisco, CA",
+      "founding_year": 2015,
+      "employee_count": "1000+",
+      "categories_tags": ["AI Research", "LLM"]
+    }
+  },
+  {
+    "id": "gt-startup-02",
+    "target_schema": "Startup",
+    "source_text": "<div class=\"company-card\"><h1>Anthropic PBC</h1><p class=\"tagline\">AI Safety and Research Building Claude Models</p><span class=\"funding\">Total Funding: $7.3B</span><span class=\"stage\">Stage: Series E</span><span class=\"location\">Location: San Francisco, CA</span><span class=\"year\">Founded: 2021</span><span class=\"team\">Employees: 500-1000</span><div class=\"categories\"><span>AI Safety</span><span>Claude</span></div></div>",
+    "expected_fields": {
+      "name": "Anthropic PBC",
+      "description": "AI Safety and Research Building Claude Models",
+      "total_funding": "$7.3B",
+      "stage": "Series E",
+      "location": "San Francisco, CA",
+      "founding_year": 2021,
+      "employee_count": "500-1000",
+      "categories_tags": ["AI Safety", "Claude"]
+    }
+  },
+  {
+    "id": "gt-product-01",
+    "target_schema": "Product",
+    "source_text": "<div class=\"product-header\"><h1 class=\"product-title\">SynthFlow Voice 2.0</h1><p class=\"tagline\">Real-Time Low-Latency AI Voice Agents for Enterprise</p><div class=\"maker\">By Synthflow Inc</div><div class=\"upvotes\">Upvotes: 1240</div><div class=\"pricing\">Pricing Model: Freemium</div><a class=\"url\" href=\"https://synthflow.ai\">Product Website</a></div>",
+    "expected_fields": {
+      "name": "SynthFlow Voice 2.0",
+      "tagline": "Real-Time Low-Latency AI Voice Agents for Enterprise",
+      "maker_company": "Synthflow Inc",
+      "upvotes": 1240,
+      "pricing_model": "Freemium",
+      "url": "https://synthflow.ai"
+    }
+  },
+  {
+    "id": "gt-product-02",
+    "target_schema": "Product",
+    "source_text": "<div class=\"product-header\"><h1 class=\"product-title\">Claude 3.5 Sonnet</h1><p class=\"tagline\">State of the Art Intelligence & Code Generation Model</p><div class=\"maker\">By Anthropic, Inc.</div><div class=\"upvotes\">Upvotes: 4890</div><div class=\"pricing\">Pricing Model: Paid</div><a class=\"url\" href=\"https://claude.ai\">Product Website</a></div>",
+    "expected_fields": {
+      "name": "Claude 3.5 Sonnet",
+      "tagline": "State of the Art Intelligence & Code Generation Model",
+      "maker_company": "Anthropic, Inc.",
+      "upvotes": 4890,
+      "pricing_model": "Paid",
+      "url": "https://claude.ai"
+    }
+  },
+  {
+    "id": "gt-paper-01",
+    "target_schema": "ResearchPaper",
+    "source_text": "<div class=\"paper-entry\"><h2>Context-Aware Interleaved Batching for WhisperX</h2><div class=\"authors\">Authors: Carlos Bain, Max Bain</div><div class=\"abstract\">While WhisperX accelerates speech transcription via intra-audio batching, it isolates audio segments. We propose Context-Aware Interleaved Batching to maintain continuous historical context across batched audio.</div><div class=\"venue\">Venue: ArXiv Preprint (cs.CL)</div><a class=\"pdf\" href=\"https://arxiv.org/pdf/2608.31170v1\">Download PDF</a><div class=\"citations\">Citations: 42</div></div>",
+    "expected_fields": {
+      "title": "Context-Aware Interleaved Batching for WhisperX",
+      "authors": ["Carlos Bain", "Max Bain"],
+      "abstract": "While WhisperX accelerates speech transcription via intra-audio batching, it isolates audio segments. We propose Context-Aware Interleaved Batching to maintain continuous historical context across batched audio.",
+      "journal_conference": "ArXiv",
+      "pdf_url": "https://arxiv.org/pdf/2608.31170v1",
+      "citations_count": 42
+    }
+  },
+  {
+    "id": "gt-job-01",
+    "target_schema": "Job",
+    "source_text": "<div class=\"job-listing\"><h1 class=\"job-title\">Senior Distributed Systems Engineer</h1><div class=\"company\">Graphone Tech</div><div class=\"location\">Location: Remote</div><div class=\"salary\">Salary: $170,000 - $210,000</div><div class=\"type\">Full-time</div><div class=\"skills\">Requirements: Python, Asyncio, FastAPI</div></div>",
+    "expected_fields": {
+      "title": "Senior Distributed Systems Engineer",
+      "company": "Graphone Tech",
+      "location": "Remote",
+      "job_type": "Full-time",
+      "salary_range": "$170,000 - $210,000",
+      "requirements": ["Python", "Asyncio", "FastAPI"]
+    }
+  },
+  {
+    "id": "gt-news-01",
+    "target_schema": "News",
+    "source_text": "<article class=\"news-post\"><h1 class=\"headline\">DeepSeek Releases Open-Source V3 Reasoning Model</h1><div class=\"byline\">Published on 2026-08-30 by TechCrunch</div><p class=\"summary\">DeepSeek releases V3 reasoning model.</p><div class=\"sentiment\">Market Sentiment: 0.85</div></article>",
+    "expected_fields": {
+      "title": "DeepSeek Releases Open-Source V3 Reasoning Model",
+      "summary": "DeepSeek releases V3 reasoning model.",
+      "author": "TechCrunch",
+      "sentiment_score": 0.85
+    }
+  }
+]

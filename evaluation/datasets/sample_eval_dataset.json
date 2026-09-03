@@ -1,0 +1,150 @@
+[
+  {
+    "id": "eval-001",
+    "record_type": "startup",
+    "raw_name": "OpenAI, Inc.",
+    "target_schema": "Startup",
+    "html": "<div class=\"company-card\"><h1>OpenAI, Inc.</h1><p class=\"tagline\">Frontier Artificial Intelligence & Research Company</p><span class=\"funding\">Total Funding: $13B</span><span class=\"stage\">Stage: Series F</span><span class=\"location\">Location: San Francisco, CA</span><span class=\"year\">Founded: 2015</span><span class=\"team\">Employees: 1000+</span><div class=\"categories\"><span>AI Research</span><span>LLM</span></div></div>"
+  },
+  {
+    "id": "eval-002",
+    "record_type": "startup",
+    "raw_name": "Anthropic PBC",
+    "target_schema": "Startup",
+    "html": "<div class=\"company-card\"><h1>Anthropic PBC</h1><p class=\"tagline\">AI Safety and Research Building Claude Models</p><span class=\"funding\">Total Funding: $7.3B</span><span class=\"stage\">Stage: Series E</span><span class=\"location\">Location: San Francisco, CA</span><span class=\"year\">Founded: 2021</span><span class=\"team\">Employees: 500-1000</span><div class=\"categories\"><span>AI Safety</span><span>Claude</span></div></div>"
+  },
+  {
+    "id": "eval-003",
+    "record_type": "startup",
+    "raw_name": "Cogna AI",
+    "target_schema": "Startup",
+    "html": "<div class=\"company-card\"><h1>Cogna AI</h1><p class=\"tagline\">Autonomous AI Data Ingestion and Pipeline Infrastructure</p><span class=\"funding\">Total Funding: $18.5M</span><span class=\"stage\">Stage: Series A</span><span class=\"location\">Location: San Francisco, CA</span><span class=\"year\">Founded: 2023</span><span class=\"team\">Employees: 25-50</span><div class=\"categories\"><span>AI Infrastructure</span><span>Developer Tools</span></div></div>"
+  },
+  {
+    "id": "eval-004",
+    "record_type": "startup",
+    "raw_name": "Mistral AI SAS",
+    "target_schema": "Startup",
+    "html": "<div class=\"company-card\"><h1>Mistral AI SAS</h1><p class=\"tagline\">Frontier Open Weights Models for Enterprise AI</p><span class=\"funding\">Total Funding: $640M</span><span class=\"stage\">Stage: Series B</span><span class=\"location\">Location: Paris, France</span><span class=\"year\">Founded: 2023</span><span class=\"team\">Employees: 50-100</span><div class=\"categories\"><span>Open Source</span><span>AI Models</span></div></div>"
+  },
+  {
+    "id": "eval-005",
+    "record_type": "startup",
+    "raw_name": "Scale AI LLC",
+    "target_schema": "Startup",
+    "html": "<div class=\"company-card\"><h1>Scale AI LLC</h1><p class=\"tagline\">Data Platform for AI & Machine Learning Annotations</p><span class=\"funding\">Total Funding: $1.6B</span><span class=\"stage\">Stage: Series F</span><span class=\"location\">Location: San Francisco, CA</span><span class=\"year\">Founded: 2016</span><span class=\"team\">Employees: 1000+</span><div class=\"categories\"><span>Data Labeling</span><span>Enterprise AI</span></div></div>"
+  },
+  {
+    "id": "eval-006",
+    "record_type": "product",
+    "raw_name": "SynthFlow Voice 2.0",
+    "maker_company": "Synthflow Inc",
+    "target_schema": "Product",
+    "html": "<div class=\"product-header\"><h1 class=\"product-title\">SynthFlow Voice 2.0</h1><p class=\"tagline\">Real-Time Low-Latency AI Voice Agents for Enterprise</p><div class=\"maker\">By Synthflow Inc</div><div class=\"upvotes\">Upvotes: 1240</div><div class=\"pricing\">Pricing Model: Freemium</div><a class=\"url\" href=\"https://synthflow.ai\">Product Website</a></div>"
+  },
+  {
+    "id": "eval-007",
+    "record_type": "product",
+    "raw_name": "Claude 3.5 Sonnet",
+    "maker_company": "Anthropic, Inc.",
+    "target_schema": "Product",
+    "html": "<div class=\"product-header\"><h1 class=\"product-title\">Claude 3.5 Sonnet</h1><p class=\"tagline\">State of the Art Intelligence & Code Generation Model</p><div class=\"maker\">By Anthropic, Inc.</div><div class=\"upvotes\">Upvotes: 4890</div><div class=\"pricing\">Pricing Model: Paid</div><a class=\"url\" href=\"https://claude.ai\">Product Website</a></div>"
+  },
+  {
+    "id": "eval-008",
+    "record_type": "product",
+    "raw_name": "Cursor AI Editor",
+    "maker_company": "Anysphere Inc",
+    "target_schema": "Product",
+    "html": "<div class=\"product-header\"><h1 class=\"product-title\">Cursor AI Editor</h1><p class=\"tagline\">The AI-first Code Editor for Pair Programming</p><div class=\"maker\">By Anysphere Inc</div><div class=\"upvotes\">Upvotes: 3500</div><div class=\"pricing\">Pricing Model: Freemium</div><a class=\"url\" href=\"https://cursor.com\">Product Website</a></div>"
+  },
+  {
+    "id": "eval-009",
+    "record_type": "product",
+    "raw_name": "Perplexity Search",
+    "maker_company": "Perplexity AI LLC",
+    "target_schema": "Product",
+    "html": "<div class=\"product-header\"><h1 class=\"product-title\">Perplexity Search</h1><p class=\"tagline\">Conversational Search Engine powered by LLMs</p><div class=\"maker\">By Perplexity AI LLC</div><div class=\"upvotes\">Upvotes: 5200</div><div class=\"pricing\">Pricing Model: Freemium</div><a class=\"url\" href=\"https://perplexity.ai\">Product Website</a></div>"
+  },
+  {
+    "id": "eval-010",
+    "record_type": "product",
+    "raw_name": "Hugging Face Hub",
+    "maker_company": "Hugging Face Hub",
+    "target_schema": "Product",
+    "html": "<div class=\"product-header\"><h1 class=\"product-title\">Hugging Face Hub</h1><p class=\"tagline\">The AI community building the future of open models</p><div class=\"maker\">By Hugging Face Hub</div><div class=\"upvotes\">Upvotes: 8900</div><div class=\"pricing\">Pricing Model: Freemium</div><a class=\"url\" href=\"https://huggingface.co\">Product Website</a></div>"
+  },
+  {
+    "id": "eval-011",
+    "record_type": "research_paper",
+    "raw_name": "Context-Aware Interleaved Batching for WhisperX",
+    "target_schema": "ResearchPaper",
+    "html": "<div class=\"paper-entry\"><h2>Context-Aware Interleaved Batching for WhisperX</h2><div class=\"authors\">Authors: Carlos Bain, Max Bain</div><div class=\"abstract\">While WhisperX accelerates speech transcription via intra-audio batching, it isolates audio segments. We propose Context-Aware Interleaved Batching to maintain continuous historical context across batched audio.</div><div class=\"venue\">Venue: ArXiv Preprint (cs.CL)</div><a class=\"pdf\" href=\"https://arxiv.org/pdf/2608.31170v1\">Download PDF</a><div class=\"citations\">Citations: 42</div></div>"
+  },
+  {
+    "id": "eval-012",
+    "record_type": "research_paper",
+    "raw_name": "DeepSeek-R1: Incentivizing Reasoning Capability via RL",
+    "target_schema": "ResearchPaper",
+    "html": "<div class=\"paper-entry\"><h2>DeepSeek-R1: Incentivizing Reasoning Capability via RL</h2><div class=\"authors\">Authors: DeepSeek AI Team</div><div class=\"abstract\">We present DeepSeek-R1, a reasoning model trained through large-scale reinforcement learning without supervised fine-tuning.</div><div class=\"venue\">Venue: ArXiv Preprint (cs.AI)</div><a class=\"pdf\" href=\"https://arxiv.org/pdf/2501.12948\">Download PDF</a><div class=\"citations\">128</div></div>"
+  },
+  {
+    "id": "eval-013",
+    "record_type": "job",
+    "raw_name": "Senior Distributed Systems Engineer",
+    "company": "Graphone Tech",
+    "target_schema": "Job",
+    "html": "<div class=\"job-listing\"><h1 class=\"job-title\">Senior Distributed Systems Engineer</h1><div class=\"company\">Graphone Tech</div><div class=\"location\">Location: Remote (US / Canada)</div><div class=\"salary\">Salary: $170,000 - $210,000 USD</div><div class=\"type\">Full-time</div><div class=\"skills\">Requirements: Python, Asyncio, FastAPI, Rust, Redis, Kubernetes</div></div>"
+  },
+  {
+    "id": "eval-014",
+    "record_type": "job",
+    "raw_name": "AI Systems & Infrastructure Lead",
+    "company": "Cohere Technologies",
+    "target_schema": "Job",
+    "html": "<div class=\"job-listing\"><h1 class=\"job-title\">AI Systems & Infrastructure Lead</h1><div class=\"company\">Cohere Technologies</div><div class=\"location\">Location: Toronto, ON</div><div class=\"salary\">Salary: $190,000 - $240,000 USD</div><div class=\"type\">Full-time</div><div class=\"skills\">Requirements: C++, PyTorch, CUDA, Distributed Training</div></div>"
+  },
+  {
+    "id": "eval-015",
+    "record_type": "news",
+    "raw_name": "DeepSeek Releases Open-Source V3 Reasoning Model",
+    "target_schema": "News",
+    "html": "<article class=\"news-post\"><h1 class=\"headline\">DeepSeek Releases Open-Source V3 Reasoning Model</h1><div class=\"byline\">Published on 2026-08-30 by TechCrunch</div><p class=\"summary\">DeepSeek has announced the public release of its flagship open weights model, demonstrating unprecedented performance benchmarks in mathematical reasoning and automated software engineering.</p><div class=\"sentiment\">Market Sentiment: Bullish (0.92)</div></article>"
+  },
+  {
+    "id": "eval-016",
+    "record_type": "news",
+    "raw_name": "Anthropic Announces Claude 3.5 Sonnet Artifacts",
+    "target_schema": "News",
+    "html": "<article class=\"news-post\"><h1 class=\"headline\">Anthropic Announces Claude 3.5 Sonnet Artifacts</h1><div class=\"byline\">Published on 2026-08-25 by VentureBeat</div><p class=\"summary\">Anthropic releases interactive web UI workspace capabilities allowing developers to visualize diagrams and code side-by-side.</p><div class=\"sentiment\">Market Sentiment: Positive (0.88)</div></article>"
+  },
+  {
+    "id": "eval-017",
+    "record_type": "startup",
+    "raw_name": "Cohere Technologies Cloud",
+    "target_schema": "Startup",
+    "html": "<div class=\"company-card\"><h1>Cohere Technologies Cloud</h1><p class=\"tagline\">Enterprise Language Models and Embedding Solutions</p><span class=\"funding\">Total Funding: $445M</span><span class=\"stage\">Stage: Series C</span><span class=\"location\">Location: Toronto, Canada</span><span class=\"year\">Founded: 2019</span><span class=\"team\">Employees: 250-500</span><div class=\"categories\"><span>Enterprise LLM</span><span>Embeddings</span></div></div>"
+  },
+  {
+    "id": "eval-018",
+    "record_type": "startup",
+    "raw_name": "Totally Unknown Startup X99",
+    "target_schema": "Startup",
+    "html": "<div class=\"company-card\"><h1>Totally Unknown Startup X99</h1><p class=\"tagline\">Stealth Mode Quantum Machine Learning</p><span class=\"funding\">Total Funding: $500K</span><span class=\"stage\">Stage: Pre-Seed</span><span class=\"location\">Location: Austin, TX</span><span class=\"year\">Founded: 2025</span><span class=\"team\">Employees: 1-10</span><div class=\"categories\"><span>Quantum AI</span></div></div>"
+  },
+  {
+    "id": "eval-019",
+    "record_type": "product",
+    "raw_name": "Novel AI Generator Tool 99",
+    "maker_company": "Unknown AI Corp 99",
+    "target_schema": "Product",
+    "html": "<div class=\"product-header\"><h1 class=\"product-title\">Novel AI Generator Tool 99</h1><p class=\"tagline\">Generative graphics utility for indie creators</p><div class=\"maker\">By Unknown AI Corp 99</div><div class=\"upvotes\">Upvotes: 15</div><div class=\"pricing\">Pricing Model: Free</div><a class=\"url\" href=\"https://unknownaicorp.test\">Product Website</a></div>"
+  },
+  {
+    "id": "eval-020",
+    "record_type": "startup",
+    "raw_name": "openai.com",
+    "target_schema": "Startup",
+    "html": "<div class=\"company-card\"><h1>openai.com</h1><p class=\"tagline\">OpenAI Web Domain Alias Entity</p><span class=\"funding\">Total Funding: $13B</span><span class=\"stage\">Stage: Series F</span><span class=\"location\">Location: San Francisco, CA</span><span class=\"year\">Founded: 2015</span><span class=\"team\">Employees: 1000+</span><div class=\"categories\"><span>AI Research</span></div></div>"
+  }
+]

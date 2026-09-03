@@ -210,12 +210,18 @@ All record schemas inherit from `BaseRecord` to enforce uniform data provenance 
 
 ---
 
-## Testing
+## Testing & Benchmarking
+
+### Unit & Integration Test Suite
 
 Execute the test suite using `pytest`:
 
 ```bash
+# Run full unit and integration test suite
 pytest tests/ -v
+
+# Run isolated end-to-end pipeline integration test suite
+pytest tests/test_e2e_pipeline.py -v
 ```
 
 To run test coverage analysis:
@@ -223,3 +229,26 @@ To run test coverage analysis:
 ```bash
 pytest tests/ --cov=src --cov-report=term-missing
 ```
+
+### Reproducible Pipeline Benchmarking Framework
+
+Run quantitative, zero-cost pipeline benchmarks across ingestion throughput, scraper latency, LLM tier fallback, Pydantic validation quality, entity resolution duplicate rates, and LanceDB vector search query latencies:
+
+```bash
+# Run offline scientific benchmark (zero-cost, mock mode with warm-up & iterations)
+python -m evaluation.benchmark --mode mock --records 20 --iterations 3 --warmup-records 2 --output evaluation/reports/baseline.json
+
+# Compare baseline and new benchmark reports
+python -m evaluation.compare evaluation/reports/baseline.json evaluation/reports/new.json --output evaluation/reports/diff.json
+
+# Run LLM extraction quality evaluation across ground-truth dataset
+python -m evaluation.llm.evaluator --provider chain --output evaluation/reports/llm_chain_eval.json
+
+# Run Entity Resolution engine evaluation & threshold sweep
+python -m evaluation.resolution.evaluator --threshold 85.0 --output evaluation/reports/resolution_eval.json
+```
+
+For detailed metrics descriptions, scientific methodologies, and report specifications, refer to:
+* [`evaluation/README.md`](evaluation/README.md)
+* [`evaluation/llm/README.md`](evaluation/llm/README.md)
+* [`evaluation/resolution/README.md`](evaluation/resolution/README.md)
