@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional
 import structlog
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
 from config.settings import configure_logging, settings
@@ -18,6 +18,7 @@ from src.dashboard.processed_reader import (
     get_processed_stats,
     read_jsonl_records,
 )
+from src.observability.metrics import metrics_collector
 
 configure_logging(settings.LOG_LEVEL)
 logger = structlog.get_logger(__name__)
@@ -68,6 +69,25 @@ async def startup_event():
 async def get_config() -> Dict[str, Any]:
     """Get runtime pipeline settings and mock_mode status."""
     return {"mockMode": settings.MOCK_MODE, "mock_mode": settings.MOCK_MODE}
+
+
+@app.get("/metrics", response_class=PlainTextResponse)
+async def get_prometheus_metrics() -> str:
+    """Prometheus exposition metrics endpoint for operational system monitoring."""
+    stats = get_processed_stats()
+    if isinstance(stats, dict):
+        if stats.get("entities"):
+            for etype, edata in stats["entities"].items():
+                metrics_collector.record_ingested_entity(etype, edata.get("count", 0))
+        if stats.get("llm") and isinstance(stats["llm"], dict) and stats["llm"].get("tiers"):
+            for tier in stats["llm"]["tiers"]:
+                provider = tier.get("provider", "Heuristic")
+                metrics_collector.record_llm_call(
+                    provider,
+                    latency_seconds=tier.get("avgLatencyMs", 0) / 1000.0,
+                    token_count=tier.get("tokenCount", 0),
+                )
+    return metrics_collector.generate_prometheus_format()
 
 
 @app.get("/api/stats")
@@ -149,11 +169,26 @@ async def get_entity_log() -> Dict[str, Any]:
     return get_processed_entity_log()
 
 
+@app.get("/api/graph")
+async def get_knowledge_graph() -> Dict[str, Any]:
+    """Fetch Knowledge Graph nodes and relational edges."""
+    from src.resolution.graph_linker import graph_linker
+    nodes, edges = graph_linker.build_graph_triples()
+    return {"nodes": nodes, "edges": edges, "summary": {"nodeCount": len(nodes), "edgeCount": len(edges)}}
+
+
+@app.get("/api/graph/export", response_class=PlainTextResponse)
+async def export_cypher_graph() -> str:
+    """Export Neo4j Cypher import script for Knowledge Graph visualization."""
+    from src.resolution.graph_linker import graph_linker
+    return graph_linker.generate_cypher_import_script()
+
+
 @app.get("/api/logs")
 async def get_logs(
     source: str = Query(default="scrape.log", description="Log file source: scrape.log, llm_extraction.log, entity_resolution.log")
 ) -> List[Dict[str, Any]]:
-    """Tail recent pipeline log entries color-coded by log level."""
+    """Tail recent pipeline log entries color-coded by log level from live log files."""
     if source in ("llm_extraction.log", "llm_calls_log.jsonl"):
         llm_records = read_jsonl_records("llm_calls_log.jsonl")
         if llm_records:
@@ -167,6 +202,39 @@ async def get_logs(
                     "message": f"[{r.get('provider')}] schema '{r.get('schema')}' {'succeeded' if succ else 'failed'} ({r.get('latency_ms')}ms, {r.get('token_count')} tokens)" + (f" - Error: {r.get('error')}" if r.get('error') else ""),
                 })
             return formatted_logs
+
+    if source in ("entity_resolution.log", "entity_mapping_log.jsonl"):
+        er_log = get_processed_entity_log()
+        entries = er_log.get("entries", [])
+        if entries:
+            formatted_logs = []
+            for e in entries[-50:]:
+                formatted_logs.append({
+                    "timestamp": e.get("timestamp"),
+                    "level": "INFO" if e.get("status") == "merged" else "DEBUG",
+                    "module": "src.resolution.entity_resolver",
+                    "message": f"[EntityResolver] Merged entity '{e.get('raw_name')}' -> '{e.get('canonical_name')}' (method: {e.get('method_used')}, confidence: {e.get('confidence_score')})",
+                })
+            return formatted_logs
+
+    if source == "scrape.log":
+        all_records = get_all_processed_records()
+        scrape_events = []
+        for r_type, records in all_records.items():
+            if r_type == "entity_log":
+                continue
+            for r in records[-15:]:
+                name_val = r.get("name") or r.get("title") or r.get("canonical_name") or "Extracted Payload"
+                src_name = (r.get("source") or {}).get("name") if isinstance(r.get("source"), dict) else "AsyncScraper"
+                scrape_events.append({
+                    "timestamp": r.get("created_at") or r.get("timestamp") or datetime.now(timezone.utc).isoformat(),
+                    "level": "INFO",
+                    "module": "src.ingestion.async_scraper",
+                    "message": f"[{src_name}] Ingested {r_type[:-1] if r_type.endswith('s') else r_type} item: '{name_val}'",
+                })
+        if scrape_events:
+            scrape_events.sort(key=lambda x: str(x.get("timestamp", "")))
+            return scrape_events[-50:]
 
     logs_data = load_mock_json("logs.json")
     if isinstance(logs_data, dict):

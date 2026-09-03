@@ -7,6 +7,8 @@ import { DataBrowserPage } from "./pages/DataBrowserPage";
 import { EntityResolutionPage } from "./pages/EntityResolutionPage";
 import { PipelineLogsPage } from "./pages/PipelineLogsPage";
 
+import { KnowledgeGraphPage } from "./pages/KnowledgeGraphPage";
+
 export const App: React.FC = () => {
   const [currentRoute, setCurrentRoute] = useState<string>("overview");
   const [selectedEntityCategory, setSelectedEntityCategory] = useState<string>("startup");
@@ -93,6 +95,8 @@ export const App: React.FC = () => {
           )}
 
           {currentRoute === "resolution" && <EntityResolutionPage />}
+
+          {currentRoute === "graph" && <KnowledgeGraphPage />}
 
           {currentRoute === "logs" && <PipelineLogsPage />}
         </main>

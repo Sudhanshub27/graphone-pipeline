@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { LayoutDashboard, Database, GitMerge, Terminal, Search } from "lucide-react";
+import { LayoutDashboard, Database, GitMerge, Terminal, Search, Share2 } from "lucide-react";
 
 interface SidebarProps {
   currentRoute: string;
@@ -36,6 +36,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: "overview", label: "Overview", icon: LayoutDashboard },
     { id: "browser", label: "Data Browser", icon: Database },
     { id: "resolution", label: "Entity Resolution", icon: GitMerge },
+    { id: "graph", label: "Knowledge Graph", icon: Share2 },
     { id: "logs", label: "Pipeline Logs", icon: Terminal },
   ];
 

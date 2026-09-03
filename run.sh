@@ -65,10 +65,19 @@ echo "📊 STAGE 3: EXECUTING GOOGLE SHEETS / CSV EXPORT SYNC"
 echo "======================================================================"
 python3 -m src.main export sheets $RUN_ARGS
 
-# 5. Launch Web Dashboard UI
+# 5. Build React Dashboard Frontend Production Bundle
+if [ -d "src/dashboard/frontend" ]; then
+    echo ""
+    echo "======================================================================"
+    echo "📦 STAGE 4: BUILDING REACT FRONTEND PRODUCTION BUNDLE"
+    echo "======================================================================"
+    (cd src/dashboard/frontend && npm run build)
+fi
+
+# 6. Launch Web Dashboard UI
 echo ""
 echo "======================================================================"
-echo "🌐 STAGE 4: LAUNCHING REACT + FASTAPI DASHBOARD WEB UI"
+echo "🌐 STAGE 5: LAUNCHING REACT + FASTAPI DASHBOARD WEB UI"
 echo "======================================================================"
 echo "▶ Dashboard server running at: http://localhost:8000"
 echo "▶ Press Ctrl+C to stop the dashboard server."
