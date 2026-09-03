@@ -1,4 +1,3 @@
-import pytest
 from src.dashboard.processed_reader import (
     get_all_processed_records,
     get_processed_entity_log,

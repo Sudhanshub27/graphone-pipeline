@@ -1,10 +1,11 @@
 from datetime import datetime
+
 from src.schemas.base import SourceMetadata
-from src.schemas.startup import Startup
-from src.schemas.product import Product
-from src.schemas.research_paper import ResearchPaper
 from src.schemas.job import Job
 from src.schemas.news import News
+from src.schemas.product import Product
+from src.schemas.research_paper import ResearchPaper
+from src.schemas.startup import Startup
 
 
 def test_startup_schema_validation():

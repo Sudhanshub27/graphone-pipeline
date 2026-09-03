@@ -9,16 +9,18 @@ Prints validated Pydantic schema dictionary outputs + winning provider tier.
 """
 
 import asyncio
-from typing import Dict, Any, List
-import structlog
-import pytest
+import json
+from typing import Any, Dict, List
 
-from src.schemas.startup import Startup
-from src.schemas.product import Product
-from src.schemas.research_paper import ResearchPaper
+import pytest
+import structlog
+
+from src.llm.fallback_chain import FallbackChain
 from src.schemas.job import Job
 from src.schemas.news import News
-from src.llm.fallback_chain import FallbackChain
+from src.schemas.product import Product
+from src.schemas.research_paper import ResearchPaper
+from src.schemas.startup import Startup
 
 logger = structlog.get_logger(__name__)
 
@@ -125,7 +127,6 @@ async def test_run_llm_fallback_chain_on_sample_snippets():
 
         print(f"✅ Succeeded Tier: {winning_tier}")
         print("Parsed JSON Output:")
-        import json
         print(json.dumps(extracted_dict, indent=2))
         results.append((item['name'], winning_tier, extracted_dict))
 

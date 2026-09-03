@@ -1,9 +1,9 @@
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
-import pytest
-import aiohttp
 
-from src.scrapers.base import AsyncScraper, TokenBucketRateLimiter, HTTPStatusRetryableError
+import pytest
+
+from src.scrapers.base import AsyncScraper, HTTPStatusRetryableError, TokenBucketRateLimiter
 from src.scrapers.directory_scraper import DirectoryScraper, DirectoryScraperConfig
 
 
