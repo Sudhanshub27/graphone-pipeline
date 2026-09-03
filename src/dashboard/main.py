@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -62,13 +63,35 @@ def load_mock_json(filename: str) -> Any:
         return json.load(f)
 
 
+def sync_static_assets():
+    """Copy logo and favicon assets to frontend public and dist directories."""
+    pub_dir = settings.BASE_DIR / "src" / "dashboard" / "frontend" / "public"
+    dist_dir = settings.BASE_DIR / "src" / "dashboard" / "frontend" / "dist"
+    pub_dir.mkdir(parents=True, exist_ok=True)
+
+    logo_src = settings.BASE_DIR / "logo.png"
+    fav_src = settings.BASE_DIR / "favicon.png"
+
+    if logo_src.exists():
+        shutil.copy(logo_src, pub_dir / "logo.png")
+        if dist_dir.exists():
+            shutil.copy(logo_src, dist_dir / "logo.png")
+
+    if fav_src.exists():
+        shutil.copy(fav_src, pub_dir / "favicon.png")
+        shutil.copy(fav_src, pub_dir / "favicon.ico")
+        if dist_dir.exists():
+            shutil.copy(fav_src, dist_dir / "favicon.png")
+            shutil.copy(fav_src, dist_dir / "favicon.ico")
+
+
 @app.on_event("startup")
 async def startup_event():
     settings.setup_directories()
     try:
-        import copy_assets
+        sync_static_assets()
     except Exception as e:
-        logger.warning("Failed executing asset copy", error=str(e))
+        logger.warning("Failed executing asset sync", error=str(e))
     logger.info("Graphone Pipeline Dashboard backend started", mock_mode=settings.MOCK_MODE)
 
 

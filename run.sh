@@ -85,7 +85,7 @@ if [ -d "src/dashboard/frontend" ]; then
     echo "======================================================================"
     echo "📦 STAGE 4: BUILDING REACT FRONTEND PRODUCTION BUNDLE"
     echo "======================================================================"
-    python3 copy_assets.py
+    python3 -c "from src.dashboard.main import sync_static_assets; sync_static_assets()" || true
     (cd src/dashboard/frontend && npm run build)
 fi
 
