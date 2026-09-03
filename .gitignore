@@ -43,9 +43,13 @@ ENV/
 env.bak/
 venv.bak/
 
-# Node / Frontend Dependencies
+# Node / Frontend Dependencies & Build Outputs
 node_modules/
 src/dashboard/frontend/node_modules/
+dist/
+src/dashboard/frontend/dist/
+src/dashboard/frontend/public/*.png
+src/dashboard/frontend/public/*.ico
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
