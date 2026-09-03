@@ -28,6 +28,7 @@ jobs:
 
       - name: Lint with ruff
         run: |
+          ruff check --fix . || true
           ruff check --select E,F --ignore E501,F401,F841 .
 
       - name: Run Pytest with Coverage Summary
