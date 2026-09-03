@@ -1,5 +1,6 @@
 import re
-from typing import Callable, List, Optional
+from typing import Any, Callable, List, Optional
+
 import structlog
 import tiktoken
 
