@@ -12,9 +12,9 @@ and hallucinated/unexpected field detection.
 import math
 import re
 from typing import Any, Dict, List, Optional, Type
-from pydantic import BaseModel, ValidationError
 
 import structlog
+from pydantic import BaseModel, ValidationError
 
 logger = structlog.get_logger(__name__)
 

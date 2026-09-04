@@ -1,5 +1,7 @@
 from typing import List, Literal, Optional
+
 from pydantic import Field
+
 from src.schemas.base import BaseRecord
 
 

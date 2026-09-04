@@ -1,5 +1,4 @@
 import pytest
-
 from src.resolution.entity_resolver import EntityResolver, normalize_entity_name
 from src.schemas.base import SourceMetadata
 from src.schemas.product import Product

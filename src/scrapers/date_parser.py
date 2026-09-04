@@ -2,10 +2,10 @@ import json
 import re
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple
-import structlog
-from dateutil import parser as dt_parser
 
+import structlog
 from config.settings import settings
+from dateutil import parser as dt_parser
 
 logger = structlog.get_logger(__name__)
 

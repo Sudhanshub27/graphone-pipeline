@@ -2,6 +2,7 @@ import asyncio
 import random
 import time
 from typing import Any, Callable, Optional, TypeVar
+
 import structlog
 
 logger = structlog.get_logger(__name__)
@@ -118,4 +119,3 @@ async def execute_with_429_retry(
 
     if last_exception:
         raise last_exception
-

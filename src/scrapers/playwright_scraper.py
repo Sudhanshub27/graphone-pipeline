@@ -1,10 +1,11 @@
 import datetime
 from pathlib import Path
 from typing import Any, List, Optional
-import structlog
 
-from playwright.async_api import async_playwright, Browser, Page, Playwright
+import structlog
 from config.settings import settings
+from playwright.async_api import Browser, Page, Playwright, async_playwright
+
 from src.scrapers.base import AsyncScraper
 
 logger = structlog.get_logger(__name__)

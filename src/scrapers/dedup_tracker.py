@@ -38,8 +38,8 @@ import hashlib
 import sqlite3
 from pathlib import Path
 from typing import Optional
-import structlog
 
+import structlog
 from config.settings import settings
 
 logger = structlog.get_logger(__name__)

@@ -12,13 +12,12 @@ repos:
     rev: v0.6.3
     hooks:
       - id: ruff
-        args: [check]
 
   - repo: local
     hooks:
       - id: python-compileall
         name: Python Syntax Check (compileall)
-        entry: python -m compileall .
+        entry: python3 -m compileall -q src config evaluation tests
         language: system
         pass_filenames: false
         types: [python]

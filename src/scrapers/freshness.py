@@ -31,16 +31,14 @@ Features:
 
 import argparse
 import asyncio
-import json
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-import aiohttp
 import feedparser
 import structlog
 import trafilatura
-
 from config.settings import settings
+
 from src.schemas.base import SourceMetadata
 from src.schemas.job import Job
 from src.schemas.news import News

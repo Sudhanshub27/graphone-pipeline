@@ -1,7 +1,6 @@
 """Unit test suite for Vector Store indexing and hybrid semantic search."""
 
 import pytest
-
 from src.vector.vector_store import (
     VectorStoreManager,
     compute_dense_text_embedding,

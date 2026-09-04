@@ -7,7 +7,6 @@ threshold sweep curves, dataset loading, and evaluator execution.
 ================================================================================
 """
 
-import pytest
 
 from evaluation.resolution.evaluator import EntityResolutionEvaluator
 from evaluation.resolution.metrics import (

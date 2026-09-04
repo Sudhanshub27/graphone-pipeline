@@ -25,10 +25,9 @@ import xml.etree.ElementTree as ET
 from typing import Any, Dict, List, Optional
 from urllib.parse import quote
 
-import aiohttp
 import structlog
-
 from config.settings import settings
+
 from src.schemas.base import SourceMetadata
 from src.schemas.research_paper import ResearchPaper
 from src.scrapers.base import AsyncScraper

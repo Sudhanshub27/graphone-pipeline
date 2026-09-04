@@ -13,7 +13,6 @@ import re
 from typing import Any, Dict, List, Optional, Tuple
 
 import structlog
-
 from config.settings import settings
 
 logger = structlog.get_logger(__name__)
@@ -77,7 +76,7 @@ class VectorStoreManager:
             tags = " ".join(item.get("categories_tags", []))
             loc = item.get("location") or ""
             full_text = f"{name} {desc} {tags} {loc}".strip()
-            
+
             indexed_items.append({
                 "id": f"startup-{item.get('id', name)}",
                 "record_type": "startup",

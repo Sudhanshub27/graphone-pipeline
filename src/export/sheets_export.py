@@ -2,8 +2,8 @@ import csv
 import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-import structlog
 
+import structlog
 from config.settings import settings
 
 logger = structlog.get_logger(__name__)

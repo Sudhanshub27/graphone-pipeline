@@ -15,11 +15,10 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 import structlog
+from config.settings import settings
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-
-from config.settings import settings
 from src.observability.metrics import metrics_collector
 
 logger = structlog.get_logger(__name__)
@@ -339,10 +338,10 @@ class BenchmarkMetricsCollector:
         """Render formatted Rich terminal report table."""
         data = self.to_dict()
         p = data["pipeline"]
-        r = data["rates"]
-        s = data["scraper"]["stats_ms"]
-        l = data["llm"]["stats_ms"]
-        v = data["vector_search"]["stats_ms"]
+        rates_data = data["rates"]
+        scraper_stats = data["scraper"]["stats_ms"]
+        llm_stats = data["llm"]["stats_ms"]
+        vector_stats = data["vector_search"]["stats_ms"]
 
         title = f"[bold cyan]TRIPWIRE SCIENTIFIC EVALUATION BENCHMARK[/bold cyan] (Git: [yellow]{self.git_commit}[/yellow] | Mode: [green]{self.mode.upper()}[/green])"
         console.print("\n")
@@ -363,22 +362,22 @@ class BenchmarkMetricsCollector:
         table.add_column("Value / Aggregate Stats", style="bold green", justify="right")
 
         # System Rates
-        table.add_row("1. Pipeline Rates", "Overall Record Success Rate", f"{round(r['success_rate'] * 100, 2)}%")
-        table.add_row("", "Pipeline Failure Rate", f"{round(r['failure_rate'] * 100, 2)}%")
-        table.add_row("", "LLM Fallback Rate", f"{round(r['llm_fallback_rate'] * 100, 2)}%")
-        table.add_row("", "Schema Validation Success Rate", f"{round(r['schema_validation_success_rate'] * 100, 2)}%")
-        table.add_row("", "Duplicate Detection Rate", f"{round(r['duplicate_detection_rate'] * 100, 2)}%")
+        table.add_row("1. Pipeline Rates", "Overall Record Success Rate", f"{round(rates_data['success_rate'] * 100, 2)}%")
+        table.add_row("", "Pipeline Failure Rate", f"{round(rates_data['failure_rate'] * 100, 2)}%")
+        table.add_row("", "LLM Fallback Rate", f"{round(rates_data['llm_fallback_rate'] * 100, 2)}%")
+        table.add_row("", "Schema Validation Success Rate", f"{round(rates_data['schema_validation_success_rate'] * 100, 2)}%")
+        table.add_row("", "Duplicate Detection Rate", f"{round(rates_data['duplicate_detection_rate'] * 100, 2)}%")
 
         # Scraper Stats
-        table.add_row("2. Scraper Latency (ms)", "Mean / Median / p95", f"{s['mean']}ms / {s['median']}ms / {s['p95']}ms")
-        table.add_row("", "Min / Max Range", f"[{s['min']}ms, {s['max']}ms]")
+        table.add_row("2. Scraper Latency (ms)", "Mean / Median / p95", f"{scraper_stats['mean']}ms / {scraper_stats['median']}ms / {scraper_stats['p95']}ms")
+        table.add_row("", "Min / Max Range", f"[{scraper_stats['min']}ms, {scraper_stats['max']}ms]")
 
         # LLM Stats
-        table.add_row("3. LLM Latency (ms)", "Mean / Median / p95", f"{l['mean']}ms / {l['median']}ms / {l['p95']}ms")
-        table.add_row("", "Min / Max Range", f"[{l['min']}ms, {l['max']}ms]")
+        table.add_row("3. LLM Latency (ms)", "Mean / Median / p95", f"{llm_stats['mean']}ms / {llm_stats['median']}ms / {llm_stats['p95']}ms")
+        table.add_row("", "Min / Max Range", f"[{llm_stats['min']}ms, {llm_stats['max']}ms]")
 
         # Vector Stats
-        table.add_row("4. Vector Latency (ms)", "Mean / Median / p95", f"{v['mean']}ms / {v['median']}ms / {v['p95']}ms")
+        table.add_row("4. Vector Latency (ms)", "Mean / Median / p95", f"{vector_stats['mean']}ms / {vector_stats['median']}ms / {vector_stats['p95']}ms")
         table.add_row("", "Indexed Record Count", str(data["vector_search"]["indexed_records"]))
 
         console.print(table)

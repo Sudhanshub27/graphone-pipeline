@@ -1,5 +1,7 @@
 from typing import List, TypeVar
+
 import structlog
+
 from src.schemas.base import BaseRecord
 
 logger = structlog.get_logger(__name__)

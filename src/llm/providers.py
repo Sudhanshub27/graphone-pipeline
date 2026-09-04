@@ -2,10 +2,11 @@ import abc
 import json
 import re
 from typing import Any, Dict, Optional, Type
+
 import structlog
+from config.settings import settings
 from pydantic import BaseModel
 
-from config.settings import settings
 from src.llm.rate_limiter import LLMRateLimiter, execute_with_429_retry
 
 logger = structlog.get_logger(__name__)
@@ -207,4 +208,3 @@ class DeepSeekProvider(LLMProvider):
         # Validate with Pydantic schema
         validated_model = schema.model_validate(json_dict)
         return validated_model.model_dump(mode="json")
-

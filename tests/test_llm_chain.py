@@ -14,7 +14,6 @@ from typing import Any, Dict, List
 
 import pytest
 import structlog
-
 from src.llm.fallback_chain import FallbackChain
 from src.schemas.job import Job
 from src.schemas.news import News

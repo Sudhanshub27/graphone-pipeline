@@ -10,8 +10,8 @@ and baseline vs new benchmark comparison.
 
 import json
 from pathlib import Path
-import pytest
 
+import pytest
 from evaluation.benchmark import run_benchmark
 from evaluation.compare import compare_reports
 from evaluation.metrics import (

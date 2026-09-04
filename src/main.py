@@ -24,26 +24,18 @@ Flags:
 
 import argparse
 import asyncio
-import os
-import sys
 import time
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-# Ensure project root is in sys.path when running as `python src/main.py`
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from typing import Any, Dict, Optional
 
 import structlog
+from config.settings import settings
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-from config.settings import settings
 from src.export.sheets_export import GoogleSheetsExporter
 from src.llm.fallback_chain import FallbackChain
 from src.resolution.entity_resolver import EntityResolver
-from src.schemas.base import SourceMetadata
 from src.schemas.product import Product
 from src.schemas.startup import Startup
 from src.scrapers.freshness import (

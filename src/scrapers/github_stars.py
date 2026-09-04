@@ -5,7 +5,6 @@ from typing import Dict, Optional
 
 import aiohttp
 import structlog
-
 from config.settings import settings
 
 logger = structlog.get_logger(__name__)

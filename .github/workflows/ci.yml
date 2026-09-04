@@ -27,7 +27,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Python Syntax Check
-        run: python -m compileall .
+        run: python -m compileall -q src config evaluation tests
 
       - name: Lint with Ruff
         run: ruff check .

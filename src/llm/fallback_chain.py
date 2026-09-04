@@ -6,10 +6,10 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Type
 
-from pydantic import BaseModel
 import structlog
-
 from config.settings import settings
+from pydantic import BaseModel
+
 from src.llm.chunking import (
     DEFAULT_MAX_INPUT_TOKENS,
     HARD_CAP_MAX_TOKENS,
@@ -256,4 +256,3 @@ class FallbackChain:
         # Step 3: All providers failed -> save raw payload to failed_extractions/
         save_failed_extraction(text, schema_name, errors)
         return None, "FAILED_ALL_PROVIDERS"
-

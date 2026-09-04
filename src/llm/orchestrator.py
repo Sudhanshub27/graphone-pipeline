@@ -1,9 +1,9 @@
 from typing import Optional, Type, TypeVar
-from pydantic import BaseModel
-import structlog
-from tenacity import retry, stop_after_attempt, wait_exponential
 
+import structlog
 from config.settings import settings
+from pydantic import BaseModel
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 logger = structlog.get_logger(__name__)
 

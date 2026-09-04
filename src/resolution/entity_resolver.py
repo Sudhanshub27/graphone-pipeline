@@ -3,11 +3,11 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
 import structlog
+from config.settings import settings
 from pydantic import BaseModel
 from rapidfuzz import fuzz
-
-from config.settings import settings
 
 logger = structlog.get_logger(__name__)
 
@@ -147,7 +147,7 @@ class EntityResolver:
           - 'unresolved': score below threshold (confidence < 0.85, flags for review)
         """
         if not raw_name or not raw_name.strip():
-            decision = self.log_decision(raw_name, None, "unresolved", 0.0)
+            self.log_decision(raw_name, None, "unresolved", 0.0)
             return None, "unresolved", 0.0
 
         clean_raw = raw_name.strip()

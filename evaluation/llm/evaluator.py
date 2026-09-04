@@ -15,23 +15,14 @@ Usage:
 import argparse
 import asyncio
 import json
-import sys
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Type
-
-# Ensure project root is in sys.path when executed as module
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
 
 import structlog
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-
-from evaluation.llm.dataset import ExtractionExample, load_extraction_dataset
-from evaluation.llm.metrics import evaluate_example_extraction
 from src.llm.fallback_chain import FallbackChain, RuleBasedFallbackProvider
 from src.llm.providers import DeepSeekProvider, GeminiProvider, GroqProvider, LLMProvider
 from src.schemas.base import BaseRecord
@@ -40,6 +31,9 @@ from src.schemas.news import News
 from src.schemas.product import Product
 from src.schemas.research_paper import ResearchPaper
 from src.schemas.startup import Startup
+
+from evaluation.llm.dataset import ExtractionExample, load_extraction_dataset
+from evaluation.llm.metrics import evaluate_example_extraction
 
 logger = structlog.get_logger(__name__)
 console = Console()

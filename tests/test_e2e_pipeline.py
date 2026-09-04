@@ -11,13 +11,12 @@ scraper failure, and duplicate entity deduplication.
 ================================================================================
 """
 
-import json
 from pathlib import Path
 from typing import Any, Dict
-import pytest
-from pydantic import ValidationError
 
+import pytest
 from config.settings import settings
+from pydantic import ValidationError
 from src.llm.fallback_chain import FallbackChain, RuleBasedFallbackProvider
 from src.llm.providers import LLMProvider
 from src.resolution.entity_resolver import EntityResolver

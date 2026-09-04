@@ -14,27 +14,21 @@ Usage:
 
 import argparse
 import json
-import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-
-# Ensure project root is in sys.path when executed as module
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
 
 import structlog
 from rapidfuzz import fuzz
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+from src.resolution.entity_resolver import EntityResolver, normalize_entity_name
 
 from evaluation.resolution.dataset import load_resolution_dataset
 from evaluation.resolution.metrics import (
     compute_resolution_evaluation_metrics,
     run_threshold_sweep,
 )
-from src.resolution.entity_resolver import EntityResolver, normalize_entity_name
 
 logger = structlog.get_logger(__name__)
 console = Console()

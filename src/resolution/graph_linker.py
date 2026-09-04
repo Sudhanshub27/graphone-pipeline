@@ -13,7 +13,6 @@ import json
 from typing import Any, Dict, List, Tuple
 
 import structlog
-
 from config.settings import settings
 
 logger = structlog.get_logger(__name__)
@@ -144,7 +143,7 @@ class KnowledgeGraphLinker:
         """Generate Cypher queries for Neo4j database import."""
         nodes, edges = self.build_graph_triples()
         cypher_lines = ["// --- Graphone Pipeline Neo4j Cypher Import Script ---"]
-        
+
         for n in nodes:
             name_clean = n["name"].replace('"', '\\"')
             cypher_lines.append(f'MERGE (n:{n["label"]} {{id: "{n["id"]}", name: "{name_clean}"}});')

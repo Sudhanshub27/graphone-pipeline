@@ -1,57 +1,104 @@
 {
-  "run": {
-    "timestamp": "2026-09-04T01:10:00Z",
+  "metadata": {
+    "timestamp": "2026-09-04T15:43:33.101008+00:00",
+    "git_commit": "5926ea2",
     "mode": "mock",
-    "git_commit": "c8a41f9",
-    "python_version": "3.14.4",
-    "target_records_per_iteration": 20,
     "iterations": 3,
+    "requested_records": 20,
     "warmup_records": 2,
-    "total_records_processed": 62
+    "configuration": {
+      "MAX_CONCURRENT_SCRAPES": 20,
+      "SCRAPER_TIMEOUT_SECONDS": 15.0,
+      "RATE_LIMIT_TOKENS_PER_SEC": 10.0,
+      "MOCK_MODE": false,
+      "DATA_PROCESSED_DIR": "/home/sudhanshu-batra/Documents/graphone-pipeline/data/processed"
+    }
   },
   "pipeline": {
-    "total_execution_seconds": 1.25,
-    "cold_start_seconds": 0.18,
-    "steady_state_seconds": 1.07,
-    "records_processed": 62,
-    "records_per_second": 49.6,
-    "average_latency_ms_per_record": 20.16
-  },
-  "scraper": {
-    "p50_latency_ms": 14.5,
-    "p95_latency_ms": 32.1,
-    "min_latency_ms": 8.2,
-    "max_latency_ms": 45.0,
-    "mean_latency_ms": 16.8
-  },
-  "llm": {
-    "total_calls": 62,
-    "successful_calls": 62,
-    "fallback_calls": 0,
-    "fallback_rate": 0.0,
-    "p50_latency_ms": 2.1,
-    "p95_latency_ms": 4.8,
-    "mean_latency_ms": 2.3
-  },
-  "resolution": {
-    "input_records": 62,
-    "duplicates_found": 14,
-    "merged_entities": 48,
-    "deduplication_rate": 0.2258,
-    "p50_latency_ms": 1.8,
-    "p95_latency_ms": 3.9
-  },
-  "vector_search": {
-    "total_indexed": 62,
-    "p50_latency_ms": 0.85,
-    "p95_latency_ms": 1.42,
-    "mean_latency_ms": 0.92
+    "records_processed": 60,
+    "successful_records": 60,
+    "failed_records": 0,
+    "records_per_second": 2843.6,
+    "cold_start_time_seconds": 0.0832,
+    "steady_state_time_seconds": 0.0211,
+    "total_execution_time_seconds": 0.1043
   },
   "rates": {
-    "success_rate": 100.0,
+    "success_rate": 1.0,
     "failure_rate": 0.0,
-    "schema_validation_rate": 100.0,
-    "llm_fallback_rate": 0.0,
-    "entity_deduplication_rate": 22.58
+    "llm_fallback_rate": 1.0,
+    "schema_validation_success_rate": 1.0,
+    "duplicate_detection_rate": 0.4
+  },
+  "scraper": {
+    "scrape_count": 60,
+    "successful_scrapes": 60,
+    "failed_scrapes": 0,
+    "stats_ms": {
+      "mean": 0.0,
+      "median": 0.0,
+      "p50": 0.0,
+      "p95": 0.0,
+      "min": 0.0,
+      "max": 0.01
+    }
+  },
+  "llm": {
+    "total_calls": 60,
+    "successful_calls": 60,
+    "failed_calls": 0,
+    "fallback_calls": 60,
+    "fallback_rate": 1.0,
+    "stats_ms": {
+      "mean": 0.2,
+      "median": 0.19,
+      "p50": 0.19,
+      "p95": 0.22,
+      "min": 0.16,
+      "max": 0.4
+    },
+    "provider_breakdown": {
+      "Gemini": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "Groq": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "DeepSeek": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "RuleBased": {
+        "count": 60,
+        "percentage": 100.0
+      }
+    }
+  },
+  "extraction_quality": {
+    "successfully_parsed": 60,
+    "schema_validation_failures": 0,
+    "missing_invalid_records": 0,
+    "validation_success_rate": 1.0
+  },
+  "resolution": {
+    "total_evaluated": 60,
+    "exact_matches": 12,
+    "normalized_matches": 3,
+    "fuzzy_matches": 9,
+    "unresolved": 36,
+    "duplicate_rate": 0.4
+  },
+  "vector_search": {
+    "stats_ms": {
+      "mean": 0.11,
+      "median": 0.11,
+      "p50": 0.11,
+      "p95": 0.12,
+      "min": 0.1,
+      "max": 0.12
+    },
+    "indexed_records": 20
   }
 }

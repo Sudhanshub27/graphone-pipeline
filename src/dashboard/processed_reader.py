@@ -1,9 +1,8 @@
 import json
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import structlog
-
 from config.settings import settings
 
 logger = structlog.get_logger(__name__)

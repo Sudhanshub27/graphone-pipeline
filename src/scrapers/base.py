@@ -74,14 +74,13 @@ from urllib.parse import urlparse
 
 import aiohttp
 import structlog
+from config.settings import settings
 from tenacity import (
     retry,
     retry_if_exception,
     stop_after_attempt,
     wait_random_exponential,
 )
-
-from config.settings import settings
 
 logger = structlog.get_logger(__name__)
 
