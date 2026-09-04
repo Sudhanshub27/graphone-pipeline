@@ -29,7 +29,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-from evaluation.resolution.dataset import ResolutionPair, load_resolution_dataset
+from evaluation.resolution.dataset import load_resolution_dataset
 from evaluation.resolution.metrics import (
     compute_resolution_evaluation_metrics,
     run_threshold_sweep,

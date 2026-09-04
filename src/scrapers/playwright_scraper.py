@@ -1,7 +1,6 @@
-import asyncio
 import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 import structlog
 
 from playwright.async_api import async_playwright, Browser, Page, Playwright

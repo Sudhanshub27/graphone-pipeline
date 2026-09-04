@@ -122,8 +122,6 @@ def normalize_date(
     Applies intelligent heuristic fallbacks if date_str is missing or malformed.
     Logs every heuristic fallback used for auditability.
     """
-    now = datetime.now(timezone.utc)
-
     # 1. Try parsing explicit date_str if provided
     if date_str and isinstance(date_str, str):
         # Try relative date parsing first

@@ -1,8 +1,6 @@
-import json
-import time
 from fastapi.testclient import TestClient
 from config.settings import settings
-from src.dashboard.main import app, get_latest_actual_benchmark_report
+from src.dashboard.main import app
 
 client = TestClient(app)
 

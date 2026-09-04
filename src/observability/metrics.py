@@ -8,8 +8,7 @@ entity resolution merger counts, and a Prometheus-formatted /metrics endpoint ou
 ================================================================================
 """
 
-import time
-from typing import Any, Dict, List
+from typing import Dict, List
 
 import structlog
 
