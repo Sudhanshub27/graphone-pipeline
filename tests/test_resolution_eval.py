@@ -7,10 +7,8 @@ threshold sweep curves, dataset loading, and evaluator execution.
 ================================================================================
 """
 
-from pathlib import Path
 import pytest
 
-from evaluation.resolution.dataset import ResolutionPair, load_resolution_dataset
 from evaluation.resolution.evaluator import EntityResolutionEvaluator
 from evaluation.resolution.metrics import (
     compute_binary_classification_metrics,

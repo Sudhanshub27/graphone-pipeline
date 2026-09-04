@@ -1,7 +1,7 @@
 import asyncio
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 import structlog

@@ -26,14 +26,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Lint with ruff
-        run: |
-          ruff check --fix . || true
-          ruff check --select E,F --ignore E501,F401,F841,E302,E303,E402,E722 .
+      - name: Python Syntax Check
+        run: python -m compileall .
+
+      - name: Lint with Ruff
+        run: ruff check .
 
       - name: Run Pytest with Coverage Summary
-        run: |
-          pytest tests/ --cov=src --cov-report=term-missing
+        run: pytest tests/ --cov=src --cov-report=term-missing
 
   frontend-ci:
     name: Frontend (Node.js)
@@ -54,15 +54,10 @@ jobs:
         working-directory: src/dashboard/frontend
         run: npm ci
 
+      - name: Lint React frontend app
+        working-directory: src/dashboard/frontend
+        run: npm run lint
+
       - name: Build React frontend app
         working-directory: src/dashboard/frontend
         run: npm run build
-
-      - name: Lint frontend (if script exists)
-        working-directory: src/dashboard/frontend
-        run: |
-          if node -e "const p = require('./package.json'); process.exit(p.scripts && p.scripts.lint ? 0 : 1)"; then
-            npm run lint
-          else
-            echo "No lint script in package.json, skipping."
-          fi

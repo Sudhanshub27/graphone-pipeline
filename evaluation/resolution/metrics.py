@@ -8,7 +8,7 @@ Confidence Distribution, and threshold analysis curves over RapidFuzz thresholds
 ================================================================================
 """
 
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 from evaluation.metrics import calculate_stats
 
 

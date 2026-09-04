@@ -69,7 +69,6 @@ import asyncio
 import logging
 import random
 import time
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 

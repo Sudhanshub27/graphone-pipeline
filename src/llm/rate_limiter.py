@@ -1,15 +1,8 @@
 import asyncio
 import random
 import time
-from typing import Any, Callable, Dict, Optional, TypeVar
+from typing import Any, Callable, Optional, TypeVar
 import structlog
-from tenacity import (
-    RetryError,
-    retry,
-    retry_if_exception_type,
-    stop_after_attempt,
-    wait_exponential_jitter,
-)
 
 logger = structlog.get_logger(__name__)
 

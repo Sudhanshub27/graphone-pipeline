@@ -11,7 +11,7 @@ and hallucinated/unexpected field detection.
 
 import math
 import re
-from typing import Any, Dict, List, Optional, Set, Tuple, Type
+from typing import Any, Dict, List, Optional, Type
 from pydantic import BaseModel, ValidationError
 
 import structlog

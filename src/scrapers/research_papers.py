@@ -20,7 +20,6 @@ Data Flow:
 
 import argparse
 import asyncio
-import json
 import re
 import xml.etree.ElementTree as ET
 from typing import Any, Dict, List, Optional
@@ -33,7 +32,7 @@ from config.settings import settings
 from src.schemas.base import SourceMetadata
 from src.schemas.research_paper import ResearchPaper
 from src.scrapers.base import AsyncScraper
-from src.scrapers.github_stars import fetch_github_stars, parse_github_repo_owner
+from src.scrapers.github_stars import fetch_github_stars
 
 logger = structlog.get_logger(__name__)
 

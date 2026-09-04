@@ -3,7 +3,7 @@ import json
 import re
 from typing import Any, Dict, Optional, Type
 import structlog
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 
 from config.settings import settings
 from src.llm.rate_limiter import LLMRateLimiter, execute_with_429_retry

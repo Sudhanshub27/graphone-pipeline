@@ -1,7 +1,6 @@
 import json
 import re
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 from typing import Optional, Tuple
 import structlog
 from dateutil import parser as dt_parser

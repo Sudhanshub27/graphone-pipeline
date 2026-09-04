@@ -7,10 +7,8 @@ and hallucination detection, and evaluator report generation.
 ================================================================================
 """
 
-from pathlib import Path
 import pytest
 
-from evaluation.llm.dataset import ExtractionExample, load_extraction_dataset
 from evaluation.llm.evaluator import LLMExtractionEvaluator
 from evaluation.llm.metrics import (
     compare_field_values,
@@ -20,7 +18,6 @@ from evaluation.llm.metrics import (
     normalize_string,
 )
 from src.llm.fallback_chain import RuleBasedFallbackProvider
-from src.schemas.product import Product
 from src.schemas.startup import Startup
 
 

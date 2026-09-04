@@ -11,7 +11,6 @@ reproducibility metadata (git commit, settings, environment), and Rich reporting
 
 import math
 import subprocess
-import time
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
